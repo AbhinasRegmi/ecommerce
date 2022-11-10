@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from django.urls import reverse
+
 # Create your models here.
 class Category(models.Model):
 
@@ -12,7 +14,10 @@ class Category(models.Model):
         return self.name
 
     def total_items(self):
-        return self.product_set.all().count()   
+        return self.product_set.all().count()
+
+    def get_absolute_url(self):
+        return reverse('store:category-view', kwargs={'slug': self.slug})
 
     class Meta:
         #in admin panel it will say categories instead of categorys
@@ -40,5 +45,8 @@ class Product(models.Model):
         ordering = ['-updated_at']
 
     
+    def get_absolute_url(self):
+        return reverse('store:product-view', kwargs={'slug': self.slug})
+
     def __str__(self):
         return self.title
