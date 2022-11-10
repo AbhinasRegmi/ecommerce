@@ -11,6 +11,9 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def total_items(self):
+        return self.product_set.all().count()   
+
     class Meta:
         #in admin panel it will say categories instead of categorys
         verbose_name_plural='categories'
