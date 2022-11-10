@@ -1,0 +1,42 @@
+{% extends './base.html' %}
+{% load static %}
+
+{% block title %}
+    Core Ecommerce
+{% endblock %}
+
+{% block styles %}
+{% endblock%}
+
+{% block content %}
+
+  <div class="album py-5 bg-white">
+    <div class="container">
+        <h2 class="pb-4 fw-normal">Category - {{category}}</h2>
+      <div class="row">
+
+        {% for product in product_list%}
+            <div class="col-md-4">
+            <div class="card mb-4 box-shadow">
+                <img class="card-img-top" src="{{ product.image.url }}" alt="Card image cap">
+                <div class="card-body">
+                <p class="card-text">{{product.title}}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary"><a class="text-decoration-none text-dark" href="{{ product.get_absolute_url }}">View</a></button>
+                    </div>
+                    <small class="text-muted">Rs. {{product.price}}</small>
+                </div>
+                </div>
+            </div>
+            </div>
+        {% endfor %}
+
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
