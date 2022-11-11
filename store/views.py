@@ -5,10 +5,6 @@ from .models import Category, Product
 
 
 #access this from setting templates context to send this to all pages
-def category_context(request):
-    return {
-        'category_list' : Category.objects.all().order_by('name')
-    }
 
 class HomeView(ListView):
     context_object_name = 'product_list'
