@@ -1,9 +1,9 @@
 from django.urls import path
 
-from .views import BasketSumView, basket_add
+from .views import BasketSumView, BasketAddView
 
 app_name = 'basket'
 urlpatterns = [
     path('', BasketSumView.as_view(), name='basket-sum-view'),
-    path('add/',basket_add, name='basket-add'),
+    path('add/', BasketAddView.as_view(), name='basket-add'),
 ]

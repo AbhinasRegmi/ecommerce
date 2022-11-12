@@ -73,7 +73,7 @@
       
         data = {
             'product_id': cart.value,
-            'product_num': items.value,
+            'product_count': items.value,
         }
 
         fetch("{% url 'basket:basket-add' %}",
@@ -82,12 +82,10 @@
                 body: JSON.stringify(data),
                 headers: { "X-CSRFToken": '{{csrf_token}}' },
             }
-        )
-        .then(res => {
-            console.log("Request complete! response:", res);
-        }
-        );
-}
+        ).then(res => res.json()).then(data => {
+            console.log(data)
+        });
+  }
 
 </script>
 
