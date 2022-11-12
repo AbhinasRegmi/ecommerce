@@ -53,7 +53,7 @@ Cart
                           <div class="row p-3">
                             <div class="col-2">
                               <label for="select">Qty</label>
-                                <select name="quantity" id="select">
+                                <select name="quantity" id="select_{{product.id}}">
                                   <option selected>{{item.count}}</option>
                                   <option value="1">1</option>
                                   <option value="2">2</option>
@@ -109,7 +109,8 @@ Cart
 <script>
 
   UpdateFunction = (value) => {
-    let items = document.getElementById('select')
+    let items = document.getElementById('select_' + value)
+
     let count = document.getElementById('product-count')
     let total = document.getElementById('total_price')
     let message = document.getElementById('message')
