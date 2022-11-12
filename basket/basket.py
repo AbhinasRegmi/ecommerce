@@ -5,7 +5,7 @@ class BasketSessions():
         self.session = request.session
         basket = self.session.get('basket_skey')
 
-        if 'basket_skey' not in self.session:
-            basket = self.session['basket_skey'] = {'test': 2}
+        if not basket:
+            basket = self.session['basket_skey'] = {}
 
         self.basket = basket
