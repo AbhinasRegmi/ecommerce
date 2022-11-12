@@ -12,7 +12,7 @@ class BasketSessions():
 
         # del request.session['basket_skey']
 
-    def countTotalProduct(self):
+    def __len__(self):
         # counting total products
         total_count = 0
         for product in self.basket.values():
@@ -36,7 +36,7 @@ class BasketSessions():
 
         self.session.modified = True
 
-        return self.countTotalProduct()
+        return len(self)
 
         
         
