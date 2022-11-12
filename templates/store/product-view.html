@@ -85,6 +85,10 @@
             }
         ).then(res => res.json()).then(data => {
             count.innerHTML = data['count']
+
+            let message = document.getElementById('message')
+            message.innerHTML = `<div type='button' data-dismiss='alert' class="col-11 text-center alert alert-success alert-dismissible fade show" role="alert">${data['title']} is added to cart.</div>`;
+              
         });
   }
 

@@ -1,3 +1,5 @@
+from store.models import Product
+from decimal import Decimal
 
 class BasketSessions():
 
@@ -16,10 +18,32 @@ class BasketSessions():
         # counting total products
         total_count = 0
         for product in self.basket.values():
-            print(product)
             total_count += int(product['count'])
 
         return total_count
+
+    
+    def __iter__(self):
+        """
+            make this object iteralble and return products
+        """
+        product_ids = [ int(i) for i in self.basket.keys() ]
+        products = Product.objects.filter(is_active=True, id__in=product_ids)
+        cpy_basket = self.basket.copy()
+
+        for product in products:
+            cpy_basket[str(product.id)]['product'] = product
+        
+        for item in cpy_basket.values():
+            yield item
+
+    def getTotalPrice(self):
+        total = 0
+        for product in self.basket.values():
+            total += Decimal(product['total_price'])
+
+        return total
+
 
     def addSessionData(self, product, count):
       
@@ -37,6 +61,19 @@ class BasketSessions():
         self.session.modified = True
 
         return len(self)
+
+    def deleteSessionData(self, product_id):
+
+        if str(product_id) in self.basket:
+            del self.basket[str(product_id)]
+            self.session.modified = True
+            
+            return {
+                'count': len(self),
+                'total_price': self.getTotalPrice()
+            }
+        else:
+            return None
 
         
         

@@ -2,15 +2,136 @@
 {% load static %}
 
 {% block title %}
-Basket
+Cart
 {% endblock %}
 
 
 {% block content %}
 
 
-<h1 class="text-center">Welcome to baskets.</h1>
+<main class="pt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-6 h4">Shopping Cart</div>
+            <div class="col-6 text-end h4">
+                <span id="total_price">Total: Rs {{basket.getTotalPrice}}</span>
+            </div>
+        </div>
+
+        {% for item in basket %}
+
+            {% with product=item.product %}
+
+            <div class="container pt-sm-0 pt-md-5" id="container_{{product.id}}">
+                <div class="pt-2">
+                  <div class="row g-3 bg-light py-1">
+                    <div class="col-md-5 col-lg-5 order-md-first bg-light">
+                      <img
+                        class="img-fluid mx-auto d-block width=100"
+                        loading="lazy"
+
+                        src="{{ product.image.url }}"
+                        alt="{{product.slug}}"
+                      />
+                    </div>
+                    <div class="col-md-7 col-lg-7 ps-md-3 ps-lg-5">
+                      <h1 class="mb-0 h4">{{ product.title }}</h1>
+                      <p><span class="lead">{{ product.author }}</span> (Author)</p>
+                      <!-- <p>{{ product.description }}</p> -->
+              
+                      <div class="border">
+                        <div class="col border-bottom">
+                          <div class="row p-3">
+                            <div class="col-6">Hardback</div>
+                            <div class="col-6 text-end">
+                                <span>Unit </span>
+                              <span>Rs.{{ item.price }}</span>
+                            </div>
+                          </div>
+                        </div>
+              
+                        <div class="col">
+                          <div class="row p-3">
+                            <div class="col-2">
+                              <span>Qty </span>
+                              <span>{{item.count}}</span>
+                            </div>
+
+                            <div class="col-3">
+                                <span>Total</span>
+                                <span>Rs.{{item.total_price}}</span>
+                            </div>
+              
+                            <div class="col text-end">
+                                <button
+                                type="button"
+                                class="btn btn-secondary btn-sm"
+                              >
+                                Update
+                              </button>
+                              <button
+                                type="button"
+                                class="btn btn-secondary btn-sm"
+                                value="{{product.id}}"
+
+                                onclick="DeleteFunction(value)"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+            {% endwith %}
+        {% endfor %}
+
+    </div>
+
+</main>
+{% endblock %}
 
 
+{% block scripts %}
 
+<script>
+
+  DeleteFunction = (value) =>{
+
+      data = {
+        'product_id': value
+      }
+
+      fetch("{% url 'basket:basket-delete' %}",
+      {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "X-CSRFToken": '{{csrf_token}}' },
+      }).then( res => res.json()).then( data => {
+
+        if( data['delete'] == 'ok'){
+          
+          let container = document.getElementById('container_' + value )
+          let count = document.getElementById('product-count')
+          let total = document.getElementById('total_price')
+
+          container.textContent = ''
+          container.remove()
+
+          count.innerText = data['count']
+          total.innerText = "Total: Rs " + data['total_price']
+
+          let message = document.getElementById('message')
+          message.innerHTML = `<div type='button' data-dismiss='alert' class="col-11 text-center alert alert-danger alert-dismissible fade show" role="alert">${data['title']} is removed form cart.</div>`;
+             
+        }
+      })
+  }
+
+
+</script>
 {% endblock %}
