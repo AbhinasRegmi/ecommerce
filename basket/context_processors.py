@@ -1,6 +1,11 @@
 from .basket import BasketSessions
 
 def basket(request):
+    basket = BasketSessions(request)
+    count = basket.countTotalProduct()
+
     return {
-        'basket': BasketSessions(request)
+        'basket': basket,
+        'product_count': count
     }
+

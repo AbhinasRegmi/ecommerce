@@ -7,6 +7,8 @@ from store.models import Product
 from .basket import BasketSessions
 import json
 
+
+
 class BasketSumView(TemplateView):
     template_name = 'basket/basket-sum-view.html'
 
@@ -19,10 +21,10 @@ class BasketAddView(View):
         product_count = int(data.get('product_count'))
 
         basket = BasketSessions(request)
-        basket.addSessionData(
+        count = basket.addSessionData(
             product=get_object_or_404(Product, pk=product_id),
             count=product_count
         )
 
-        return JsonResponse({'count': 100})
+        return JsonResponse({'count': count})
 

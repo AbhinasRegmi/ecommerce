@@ -68,6 +68,7 @@
 <script>
     let cart = document.getElementById('cart')
     let items = document.getElementById('select')
+    let count = document.getElementById('product-count')
 
     cart.onclick = () => {
       
@@ -83,7 +84,7 @@
                 headers: { "X-CSRFToken": '{{csrf_token}}' },
             }
         ).then(res => res.json()).then(data => {
-            console.log(data)
+            count.innerHTML = data['count']
         });
   }
 
