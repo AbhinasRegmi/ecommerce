@@ -30,6 +30,23 @@ class BasketAddView(View):
 
         return JsonResponse({'count': count, 'title': str(product)})
 
+class BasketUpdateView(View):
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        product_id = int(data.get('product_id'))
+        product_count = int(data.get('product_count'))
+
+        basket = BasketSessions(request)
+        product = get_object_or_404(Product, pk=product_id)
+        data = basket.updateSessionData(
+            product=product,
+            count=product_count
+        )
+
+        data['title'] = str(product)
+        return JsonResponse(data)
 
 class BasketDeleteView(View):
     http_method_names = ['post']

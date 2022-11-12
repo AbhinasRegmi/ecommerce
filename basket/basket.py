@@ -62,6 +62,21 @@ class BasketSessions():
 
         return len(self)
 
+
+    def updateSessionData(self, product, count):
+        
+        self.basket[str(product.id)]['count'] = count
+        self.basket[str(product.id)]['price'] = str(product.price)
+        self.basket[str(product.id)]['total_price'] = str(product.price * self.basket[str(product.id)]['count'])
+
+        self.session.modified = True
+
+        return {
+            'count': len(self),
+            'total_price': self.getTotalPrice(),
+            'sub_price': self.basket[str(product.id)]['total_price']
+        }
+
     def deleteSessionData(self, product_id):
 
         if str(product_id) in self.basket:

@@ -37,7 +37,6 @@ Cart
                     <div class="col-md-7 col-lg-7 ps-md-3 ps-lg-5">
                       <h1 class="mb-0 h4">{{ product.title }}</h1>
                       <p><span class="lead">{{ product.author }}</span> (Author)</p>
-                      <!-- <p>{{ product.description }}</p> -->
               
                       <div class="border">
                         <div class="col border-bottom">
@@ -53,19 +52,28 @@ Cart
                         <div class="col">
                           <div class="row p-3">
                             <div class="col-2">
-                              <span>Qty </span>
-                              <span>{{item.count}}</span>
+                              <label for="select">Qty</label>
+                                <select name="quantity" id="select">
+                                  <option selected>{{item.count}}</option>
+                                  <option value="1">1</option>
+                                  <option value="2">2</option>
+                                  <option value="3">3</option>
+                                  <option value="4">4</option>
+                                </select>
                             </div>
 
                             <div class="col-3">
                                 <span>Total</span>
-                                <span>Rs.{{item.total_price}}</span>
+                                <span id="sub_total_{{product.id}}">Rs {{item.total_price}}</span>
                             </div>
               
                             <div class="col text-end">
                                 <button
                                 type="button"
                                 class="btn btn-secondary btn-sm"
+                                value="{{product.id}}"
+
+                                onclick="UpdateFunction(value)"
                               >
                                 Update
                               </button>
@@ -100,7 +108,40 @@ Cart
 
 <script>
 
+  UpdateFunction = (value) => {
+    let items = document.getElementById('select')
+    let count = document.getElementById('product-count')
+    let total = document.getElementById('total_price')
+    let message = document.getElementById('message')
+
+    data = {
+        'product_id': value,
+        'product_count': items.value,
+      }
+
+      fetch("{% url 'basket:basket-update' %}",
+      {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "X-CSRFToken": '{{csrf_token}}' },
+      }).then( res => res.json()).then( data => {
+
+        let sub_total = document.getElementById('sub_total_' + value)
+        
+        message.innerHTML = `<div type='button' data-dismiss='alert' class="col-11 text-center alert alert-success alert-dismissible fade show" role="alert">${data['title']} is successfully updated.</div>`;
+
+        count.innerHTML = data['count']
+        total.innerText = "Total: Rs " + data['total_price']
+        sub_total.innerHTML = "Rs " + data['sub_price']
+      })
+
+  }
+
   DeleteFunction = (value) =>{
+
+    let count = document.getElementById('product-count')
+    let total = document.getElementById('total_price')
+    let message = document.getElementById('message')
 
       data = {
         'product_id': value
@@ -116,8 +157,6 @@ Cart
         if( data['delete'] == 'ok'){
           
           let container = document.getElementById('container_' + value )
-          let count = document.getElementById('product-count')
-          let total = document.getElementById('total_price')
 
           container.textContent = ''
           container.remove()
@@ -125,7 +164,6 @@ Cart
           count.innerText = data['count']
           total.innerText = "Total: Rs " + data['total_price']
 
-          let message = document.getElementById('message')
           message.innerHTML = `<div type='button' data-dismiss='alert' class="col-11 text-center alert alert-danger alert-dismissible fade show" role="alert">${data['title']} is removed form cart.</div>`;
              
         }
