@@ -1,4 +1,4 @@
-{% extends './base.html' %}
+{% extends '../base.html' %}
 
 {% block title %}
     {{ product.title | title }}
@@ -8,7 +8,7 @@
 
 <div class="container pt-sm-0 pt-md-5">
     <div class="pt-5">
-        <div class="row g-3">
+        <div class="row g-3 bg-light py-1">
             <div class="col-md-5 col-lg-5 order-md-first bg-light">
                 <img class="img-fluid mx-auto d-block" loading="lazy" src="{{ product.image.url }}" alt="{{product.slug}}">
             </div>

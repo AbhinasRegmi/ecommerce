@@ -1,3 +1,5 @@
-from django.shortcuts import render
+from django.views.generic.detail import DetailView
+from django.views.generic.base import TemplateView
 
-# Create your views here.
+class BasketSumView(TemplateView):
+    template_name = 'basket/basket-sum-view.html'
