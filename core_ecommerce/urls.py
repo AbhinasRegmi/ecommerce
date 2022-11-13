@@ -22,6 +22,7 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('basket/', include('basket.urls', namespace='basket')),
+    path('accounts/', include('accounts.urls', namespace='accounts')),
     path('', include('store.urls', namespace='store')),
 ]
 
