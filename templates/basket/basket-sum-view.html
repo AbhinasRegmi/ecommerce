@@ -18,15 +18,18 @@ Cart
             </div>
         </div>
         <hr />
-        <div class="row">
-          <div class="col-6">
-            <div></div>
+
+        {% if basket|length %}
+          <div class="row" id="checkout">
+            <div class="col-6">
+              <div></div>
+            </div>
+          <div class="col-6 row">
+              <a role="button" href="" class="btn btn-success fw-bold col-6" type="button">Checkout</a>
+              <button class="btn btn-light col-6" type="button">Save for later</button>
           </div>
-        <div class="col-6 row">
-            <a role="button" href="" class="btn btn-success fw-bold col-6" type="button">Checkout</a>
-            <button class="btn btn-light col-6" type="button">Save for later</button>
-        </div>
-        </div>    
+          </div>
+        {% endif %}
 
         {% for item in basket %}
 
@@ -120,7 +123,7 @@ Cart
 
   UpdateFunction = (value) => {
     let items = document.getElementById('select_' + value)
-
+    let checkout = document.getElementById('checkout')
     let count = document.getElementById('product-count')
     let total = document.getElementById('total_price')
     let message = document.getElementById('message')
@@ -144,6 +147,7 @@ Cart
         count.innerHTML = data['count']
         total.innerText = "Total: Rs " + data['total_price']
         sub_total.innerHTML = "Rs " + data['sub_price']
+
       })
 
   }
@@ -177,6 +181,9 @@ Cart
 
           message.innerHTML = `<div type='button' data-dismiss='alert' class="col-11 text-center alert alert-danger alert-dismissible fade show" role="alert">${data['title']} is removed form cart.</div>`;
              
+          if(!data['count']){
+            checkout.innerHTML = ''
+        }
         }
       })
   }

@@ -2,6 +2,7 @@
 django>=4.1
 django-dotenv
 pillow
+django-countries
 
 [dev-packages]
 coverage
