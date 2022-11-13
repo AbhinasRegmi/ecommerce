@@ -91,7 +91,7 @@
            </a>
             {% else %}
             <a
-             href="#login"
+             href="{% url 'accounts:login' %}"
              type="button"
              role="button"
              class="btn btn-outline-dark pb-1 mx-1">
@@ -144,6 +144,10 @@
 
     <!-- write your messages here. -->
     <div class="container-fluid row justify-content-center" id="message">
+
+      {% for message in messages %}
+      <div type='button' data-dismiss='alert' class="col-11 text-center alert alert-danger alert-dismissible fade show" role="alert">{{message}}</div>
+      {% endfor %}
     </div>
  
 

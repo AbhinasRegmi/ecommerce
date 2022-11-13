@@ -15,7 +15,7 @@
       <h1 class="display-10 fw-normal">Search, Buy, Review</h1>
       <p class="lead fw-normal px-3">Find your joy with us. Your go to shop for digital goods.</p>
       {% if not user.is_authenticated %}
-          <a class="btn btn-outline-secondary" href="#signup">Make an account</a>
+          <a class="btn btn-outline-secondary" href="{% url 'accounts:registration' %}">Make an account</a>
       {% endif %}
     </div>
     <div class="product-device shadow-sm d-none d-md-block"></div>

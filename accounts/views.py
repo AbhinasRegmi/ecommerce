@@ -1,3 +1,44 @@
-from django.shortcuts import render
+from django.views.generic import FormView, TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 
-# Create your views here.
+from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy
+from django.shortcuts import redirect
+
+from .forms import RegistrationForm
+
+class RegistrationView(FormView):
+    form_class = RegistrationForm
+    template_name = 'accounts/registration.html'
+    success_url = reverse_lazy('accounts:login')
+
+    def get(self, request, *args, **kwargs):
+
+        if self.request.user.is_authenticated:
+            return redirect(reverse_lazy('accounts:dashboard'))
+
+        return super().get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        # the default behaviour is to call form.save() and return httpresponse.
+
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.email = form.cleaned_data['email']
+            user.set_password = form.cleaned_data['password']
+            user.is_active = False
+            user.save()
+
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            messages.error(request=self.request, message='Please ensure the fields are unique and valid.')
+            return redirect(reverse_lazy('accounts:registration'))
+
+
+class LoginView(TemplateView):
+    template_name = 'accounts/login.html'
+
+
+class DashboardView(LoginRequiredMixin, TemplateView):
+    template_name = 'accounts/dashboard.html'
