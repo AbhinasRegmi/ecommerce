@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-
+from django.contrib.auth import authenticate
 from .models import UserBase
 
 
@@ -101,3 +101,49 @@ class RegistrationForm(forms.Form):
         )
 
         return user
+
+
+class LoginForm(forms.Form):
+
+    email = forms.EmailField(
+        label='Email',
+        required=True,
+        max_length=50,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your email.'
+            }
+        )
+    )
+
+    password = forms.CharField(
+        label='Password',
+        required=True,
+        widget=forms.PasswordInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your password.'
+            }
+        )
+    )
+
+    def clean(self):
+        data = super().clean()
+
+        email = data.get('email')
+        password = data.get('password')
+
+
+        self.user = authenticate(email=email, password=password, is_active=True)
+        
+        if not self.user:
+            self.add_error(
+                field='email', 
+                error="Enter correct credentials. Are you sure you're verified?"
+            )
+
+        return data
+
+    def get_user(self):
+        return self.user

@@ -80,7 +80,7 @@
 
             {% if user.is_authenticated %}
             <a
-            href="#loout"
+            href="{% url 'accounts:logout' %}"
             type="button"
             role="button"
             class="btn btn-outline-dark pb-1 mx-1">

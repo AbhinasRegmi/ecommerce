@@ -1,13 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
-from django.views.generic import FormView, TemplateView
+from django.views.generic import FormView, TemplateView, View
 
-from .forms import RegistrationForm
+from .forms import RegistrationForm, LoginForm
 from .tasks import SendVerificationToken
 from .models import UserBase
 from .token import account_verfication_token
@@ -43,9 +44,29 @@ class RegistrationView(FormView):
             messages.error(request=self.request, message='Please ensure the fields are correct.')
             return redirect(reverse_lazy('accounts:registration'))
 
+class LogoutView(View):
+    def dispatch(self, request, *args, **kwargs):
+        logout(request)
+        return HttpResponseRedirect(reverse_lazy('accounts:login'))
 
-class LoginView(TemplateView):
+class LoginView(FormView):
     template_name = 'accounts/login.html'
+    form_class = LoginForm
+
+    def get(self, request, *args: str, **kwargs):
+
+        if request.user.is_authenticated:
+            return HttpResponseRedirect(reverse_lazy('accounts:dashboard'))
+
+        return super().get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        
+        if form.is_valid():
+            #if the form is valid the credentials are correct
+            login(self.request, form.get_user())
+            return HttpResponseRedirect(reverse_lazy('accounts:dashboard'))
+
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):

@@ -7,6 +7,65 @@
 
 {% block content %}
 
-    Welcome to your Login.
+<style>
+    ul{
+        list-style: none;
+    }
+
+    .errorlist{
+
+        padding-left: 0px;
+        padding-bottom: 0px;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row no-gutter">
+        <div class="col-md-12">
+            <div class="login d-flex py-5 align-items-center">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-lg-7 mx-auto">
+
+
+                            <form method="post" class="rounded mx-auto col-lg-10 p-4">
+                                {% csrf_token %}
+
+                                <div class="text-center">
+                                    <h2 class="font-weight-bold mb-2">Login</h2>
+                                    <p class="mb-4"></p>
+                                </div>
+                                
+
+                                {% for field in form %}
+                                    
+                                    <div class="mt-2">
+                                        {% if field.errors %}
+                                            <div class="alert alert-danger align-self-center pb-0" role="alert">{{field.errors}}</div>
+                                        {% endif %}
+                                        {{field.label}}:
+                                        {{field}}
+                                    </div>
+                                {% endfor %}
+
+                                <p class="row mb-1">
+                                    <a class="col-6 text-center" href="#reset"><small class="text-muted">Forgot your password?</small></a>
+                                    <a class='col-6 text-center' href="#resend"><small class="text-muted">Resend email verification?</small></a>
+                                </p>
+
+                                <button type="submit" class="form-control btn btn-primary">Login</button>
+                                
+                                <p class="text-center mt-2">
+                                    <a href="{% url 'accounts:registration' %}">Don't have an account?</a>
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
     
 {% endblock %}
