@@ -25,6 +25,12 @@ class RegistrationView(FormView):
 
         if form.is_valid():
             form.save()
+
+            #activation code required to send for user activation.
+            #we will manage this later with celery  for now will print
+            #the url in terminal and activate user for testing
+            messages.success(request=self.request, message='Please check your email for your account verification link. You cannot login unless you are verified.')
+
             return HttpResponseRedirect(self.get_success_url())
         else:
             messages.error(request=self.request, message='Please ensure the fields are correct.')

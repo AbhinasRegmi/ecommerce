@@ -146,7 +146,12 @@
     <div class="container-fluid row justify-content-center" id="message">
 
       {% for message in messages %}
-      <div type='button' data-dismiss='alert' class="col-11 text-center alert alert-danger alert-dismissible fade show" role="alert">{{message}}</div>
+
+        {% if message.tags == 'success' %}
+          <div type='button' data-dismiss='alert' class="col-11 text-center alert alert-success alert-dismissible fade show" role="alert">{{message}}</div>
+        {% else %}
+          <div type='button' data-dismiss='alert' class="col-11 text-center alert alert-danger alert-dismissible fade show" role="alert">{{message}}</div>
+        {% endif %}
       {% endfor %}
     </div>
  

@@ -7,14 +7,59 @@ Registration
 
 
 {% block content %}
+<style>
+    ul{
+        list-style: none;
+    }
+
+    .errorlist{
+
+        padding-left: 0px;
+        padding-bottom: 0px;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row no-gutter">
+        <div class="col-md-12">
+            <div class="login d-flex py-5 align-items-center">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-lg-7 mx-auto">
 
 
-<div class="container">
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
-    </form>
+                            <form method="post" class="rounded mx-auto col-lg-10 p-4">
+                                {% csrf_token %}
+
+                                <div class="text-center">
+                                    <h2 class="font-weight-bold mb-2">Create an account.</h2>
+                                    <p class="mb-4">It's free and only takes a minute.</p>
+                                </div>
+                                
+
+                                {% for field in form %}
+                                    
+                                    <div class="mt-2">
+                                        {% if field.errors %}
+                                            <div class="alert alert-danger align-self-center pb-0" role="alert">{{field.errors}}</div>
+                                        {% endif %}
+                                        {{field.label}}:
+                                        {{field}}
+                                    </div>
+                                {% endfor %}
+
+                                <button type="submit" class="form-control mt-4 btn btn-primary">Register</button>
+                                
+                                <p class="text-center mt-2">
+                                    <a href="{% url 'accounts:login' %}">Already have an account?</a>
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 

@@ -5,28 +5,43 @@ from .models import UserBase
 
 
 class RegistrationForm(forms.Form):
-    email = forms.EmailField(
-        label='Email',
-        max_length=50,
-        required=True,
-    )
 
     username = forms.CharField(
         label='Username',
         max_length=90,
         required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter a username.'
+            }),
+    )
+
+    email = forms.EmailField(
+        label='Email',
+        max_length=50,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter your email address.'
+            }),
     )
 
     password = forms.CharField(
-        label='Strong Password',
+        label='Password',
         required=True,
-        widget=forms.PasswordInput
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter a strong password.'
+            }),
     )
 
     password2 = forms.CharField(
-        label='Password Again.',
+        label='Password',
         required=True,
-        widget=forms.PasswordInput
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter your password again.'
+            }),
     )
 
     class Meta:
