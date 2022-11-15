@@ -24,15 +24,10 @@ class RegistrationView(FormView):
         # the default behaviour is to call form.save() and return httpresponse.
 
         if form.is_valid():
-            user = form.save(commit=False)
-            user.email = form.cleaned_data['email']
-            user.set_password = form.cleaned_data['password']
-            user.is_active = False
-            user.save()
-
+            form.save()
             return HttpResponseRedirect(self.get_success_url())
         else:
-            messages.error(request=self.request, message='Please ensure the fields are unique and valid.')
+            messages.error(request=self.request, message='Please ensure the fields are correct.')
             return redirect(reverse_lazy('accounts:registration'))
 
 
