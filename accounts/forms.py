@@ -94,9 +94,10 @@ class RegistrationForm(forms.Form):
         return data
 
     def save(self):
-        print('save method called.')
-        UserBase.objects.create_user(
+        user = UserBase.objects.create_user(
             email=self.email,
             username=self.username,
             password=self.password
         )
+
+        return user

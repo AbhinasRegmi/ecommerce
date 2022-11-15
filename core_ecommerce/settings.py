@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     #local
     'store',
@@ -146,3 +147,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.UserBase'
 LOGIN_REDIRECT_URL = '/accounts/dashboard'
 LOGIN_URL = '/accounts/login/'
+
+#the timeout for verification email
+PASSWORD_RESET_TIMEOUT_DAYS = 1
+
+#site matching id
+SITE_ID=1

@@ -1,12 +1,17 @@
-from django.views.generic import FormView, TemplateView
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-
-from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
+from django.views.generic import FormView, TemplateView
 
 from .forms import RegistrationForm
+from .tasks import SendVerificationToken
+from .models import UserBase
+from .token import account_verfication_token
+
 
 class RegistrationView(FormView):
     form_class = RegistrationForm
@@ -24,11 +29,13 @@ class RegistrationView(FormView):
         # the default behaviour is to call form.save() and return httpresponse.
 
         if form.is_valid():
-            form.save()
+            user = form.save()
 
             #activation code required to send for user activation.
             #we will manage this later with celery  for now will print
+            SendVerificationToken(request=self.request, user=user)
             #the url in terminal and activate user for testing
+            
             messages.success(request=self.request, message='Please check your email for your account verification link. You cannot login unless you are verified.')
 
             return HttpResponseRedirect(self.get_success_url())
@@ -43,3 +50,20 @@ class LoginView(TemplateView):
 
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/dashboard.html'
+
+
+def activate_view(request, uid, token):
+    
+    try:
+        uid_decoded = force_str(urlsafe_base64_decode(uid))
+        user = UserBase.objects.get(pk=uid_decoded)
+
+        if user is not None and account_verfication_token.check_token(user=user, token=token):
+            user.is_active = True
+            user.save()
+
+            return HttpResponseRedirect(reverse_lazy('accounts:login'))
+
+        return HttpResponse(content={'This activation link has expired.'})
+    except:
+        return HttpResponse(content={'message': 'This activation is not valid.'})
