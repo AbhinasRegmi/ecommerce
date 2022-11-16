@@ -8,17 +8,56 @@ Edit profile
 
 
 {% block content %}
+<style>
+    ul{
+        list-style: none;
+    }
 
-<div class="container px-4">
-    <form method="post" enctype="multipart/form-data">
+    .errorlist{
 
-        {% csrf_token %}
-        {{ form.as_p }}
+        padding-left: 0px;
+        padding-bottom: 0px;
+    }
+</style>
 
-        <button type="submit">Update</button>
 
-    </form>
+<div class="container-fluid">
+    <div class="row no-gutter">
+        <div class="col-md-12">
+            <div class="login d-flex py-5 align-items-center">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-lg-7 mx-auto">
+
+                            <form method="post" enctype="multipart/form-data" class="rounded mx-auto  p-4">
+                                {% csrf_token %}
+
+                                <div>
+                                    <h2 class="font-weight-bold mb-2">Update your information.</h2>
+                                </div>
+                                
+
+                                {% for field in form %}
+                                    
+                                    <div class="mt-2">
+                                        {% if field.errors %}
+                                            <div class="alert alert-danger align-self-center pb-0" role="alert">{{field.errors}}</div>
+                                        {% endif %}
+                                        {{field.label}}:
+                                        {{field}}
+                                    </div>
+                                {% endfor %}
+
+                                <button type="submit" class="form-control mt-4 btn btn-primary">Update</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
     
 
 
