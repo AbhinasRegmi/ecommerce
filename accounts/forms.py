@@ -56,6 +56,8 @@ class RegistrationForm(forms.Form):
 
         self.email = email
 
+        #here email, other fields are not returned because i have written custom
+        #save method and accessing email from self.email
 
     def clean_username(self):
         username = self.cleaned_data['username']
@@ -94,6 +96,7 @@ class RegistrationForm(forms.Form):
         return data
 
     def save(self):
+    
         user = UserBase.objects.create_user(
             email=self.email,
             username=self.username,
@@ -147,3 +150,88 @@ class LoginForm(forms.Form):
 
     def get_user(self):
         return self.user
+
+
+
+class ProfileUpdateForm(forms.ModelForm):
+
+    firstname = forms.CharField(
+        label='Firstname*',
+        required=True,
+        max_length=50,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your firstname.'
+            }
+        )
+    )
+
+    lastname = forms.CharField(
+        label='Lastname*',
+        required=True,
+        max_length=50,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your lastname.'
+            }
+        )
+    )
+
+    about = forms.CharField(
+        label='Bio',
+        required=False,
+        max_length=500,
+        widget=forms.Textarea(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Write something about yourself.'
+            }
+        )
+    )
+    
+    country = forms.Select(
+        attrs={
+            'class': 'form-control'
+        }
+    )
+
+    phone = forms.CharField(
+        label='Phonenumber*',
+        required=True,
+        max_length=10,
+        widget=forms.NumberInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your phone number.'
+            }
+        )
+    )
+    
+    class Meta:
+        model = UserBase
+        fields = ['firstname', 'lastname', 'profile', 'about', 'country', 'phone']
+
+    def clean_firstname(self):
+        firstname = self.cleaned_data['firstname']
+        if not len(firstname) > 3:
+            raise ValidationError('Firstname must be at least  3 alphabets.')
+
+        return firstname
+
+    
+    def clean_lastname(self):
+        lastname = self.cleaned_data['lastname']
+        if not len(lastname) > 3:
+            raise ValidationError('Lastname must be at least 3 alphabets.')
+
+        return lastname
+
+    def clean_phone(self):
+        phone = self.cleaned_data['phone']
+
+        if not len(phone) == 10:
+            raise ValidationError('Phone number be of 10 digits only.')
+
+        return phone

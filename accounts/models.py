@@ -2,6 +2,8 @@ from django.db import models
 from django_countries.fields import CountryField
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
+from .validators import validate_file_size
+
 # we will be creating a custom user model
 class CustomAccountManager(BaseUserManager):
     
@@ -31,17 +33,20 @@ class CustomAccountManager(BaseUserManager):
         return user
 
 
+
+
+
 class UserBase(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=100, unique=True)
-    firstname = models.CharField(max_length=50, blank=True)
-    lastname = models.CharField(max_length=50, blank=True)
-    profile = models.ImageField(blank=True, upload_to='accounts/profile/')
-    about = models.TextField(max_length=500, blank=True)
+    firstname = models.CharField(max_length=50, blank=True, null=True)
+    lastname = models.CharField(max_length=50, blank=True, null=True)
+    profile = models.ImageField(blank=True, upload_to='accounts/profile/', null=True, validators=[validate_file_size])
+    about = models.TextField(max_length=500, blank=True, null=True)
 
     country = CountryField()
-    phone = models.CharField(max_length=10, blank=True)
+    phone = models.CharField(max_length=11, blank=True, null=True)
 
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
@@ -60,7 +65,6 @@ class UserBase(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
-
 
 
 

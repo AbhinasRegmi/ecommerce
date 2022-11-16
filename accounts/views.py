@@ -1,14 +1,15 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.views.generic import FormView, TemplateView, View
+from django.views.generic.edit import UpdateView
 
-from .forms import RegistrationForm, LoginForm
+from .forms import RegistrationForm, LoginForm, ProfileUpdateForm
 from .tasks import SendVerificationToken
 from .models import UserBase
 from .token import account_verfication_token
@@ -88,3 +89,21 @@ def activate_view(request, uid, token):
         return HttpResponse(content={'This activation link has expired.'})
     except:
         return HttpResponse(content={'message': 'This activation is not valid.'})
+
+
+
+class UpdateProfileView(LoginRequiredMixin, FormView):
+    template_name = 'accounts/updateprofile.html'
+    form_class = ProfileUpdateForm
+    success_url = reverse_lazy('accounts:dashboard')
+
+    def get_form_kwargs(self):
+        data = super().get_form_kwargs()
+        data.update({'instance': self.request.user})
+        return data
+    
+    def form_valid(self, form):
+        if form.is_valid():
+            form.save()
+        
+        return super().form_valid(form)

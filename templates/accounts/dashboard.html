@@ -7,8 +7,37 @@
 
 {% block content %}
 
-    <h1 class="text-center">Hi! {{user.username}}</h1>  
+<main class="pt-5">
+    <div class="container" style="max-width: 1000px;">
 
-        <h2 class="text-center">Welcome to your dashboard.</h2>
+        <div class="col-12 row">
+            <h2 class="h2 col"> 
+                Hi! {{user.username|upper}} 
+            </h2>
+
+            {% if user.profile %}
+                <img class="col rounded-circle img-fluid" style="max-height: 5rem; max-width: 5rem;"  src="{{user.profile.url}}">
+            {% else %}
+                <img class="col rounded-circle" style="max-height: 6rem; max-width: 6rem;" src="{% static 'images/defaultprofile.jpg' %}">
+            {% endif %}
+
+        </div>
+
+        <div class="col-12 d-flex justify-content-between">
+            <div>
+                Manage your <b>orders</b> and <b>personal details</b>.
+            </div>
+            <div>
+                <a href="{% url 'accounts:updateprofile' %}">Edit</a>
+            </div>
+        </div>
+
+        <hr>
+    </div>
+
+
+
+    <div class="container" style="max-width: 1000px;"></div>
+</main>
     
 {% endblock %}
