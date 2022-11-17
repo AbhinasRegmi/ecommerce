@@ -1,6 +1,7 @@
 from django.contrib import messages
+from django.contrib.auth import login, logout
+from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -9,7 +10,7 @@ from django.utils.http import urlsafe_base64_decode
 from django.views.generic import FormView, TemplateView, View
 from django.views.generic.edit import UpdateView
 
-from .forms import RegistrationForm, LoginForm, ProfileUpdateForm
+from .forms import RegistrationForm, LoginForm, ProfileUpdateForm, ResetYourPasswordForm, PasswordResetConfirmForm
 from .tasks import SendVerificationToken
 from .models import UserBase
 from .token import account_verfication_token
@@ -74,10 +75,10 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/dashboard.html'
 
 
-def activate_view(request, uid, token):
+def activate_view(request, uidb64, token):
     
     try:
-        uid_decoded = force_str(urlsafe_base64_decode(uid))
+        uid_decoded = force_str(urlsafe_base64_decode(uidb64))
         user = UserBase.objects.get(pk=uid_decoded)
 
         if user is not None and account_verfication_token.check_token(user=user, token=token):
@@ -106,4 +107,28 @@ class UpdateProfileView(LoginRequiredMixin, FormView):
         if form.is_valid():
             form.save()
         
+        return super().form_valid(form)
+
+
+
+class ResetYourPasswordView(PasswordResetView):
+    template_name = 'accounts/passwordreset.html'
+    form_class = ResetYourPasswordForm
+    success_url = reverse_lazy('accounts:login')
+
+    def form_valid(self, form):
+        messages.success(
+            request=self.request,
+            message="Reset link has been sent to your email. Please change your password then login."
+        )
+        return super().form_valid(form)
+    
+
+class ResetPasswordDoneView(PasswordResetConfirmView):
+    success_url = reverse_lazy('accounts:login')
+    template_name = 'accounts/passwordresetconfirm.html'
+    form_class = PasswordResetConfirmForm
+
+    def form_valid(self, form):
+        messages.success(request=self.request, message='Your password was changed successfully.')
         return super().form_valid(form)

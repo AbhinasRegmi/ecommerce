@@ -1,6 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
+from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 from .models import UserBase
 
 
@@ -235,3 +236,64 @@ class ProfileUpdateForm(forms.ModelForm):
             raise ValidationError('Phone number be of 10 digits only.')
 
         return phone
+
+
+class ResetYourPasswordForm(PasswordResetForm):
+    email = forms.EmailField(
+        label='Email',
+        required=True,
+        widget=forms.EmailInput(
+            attrs={
+                'autocomplete': 'email',
+                'class': 'form-control',
+                'placeholder': 'Enter your email here.'
+            }
+        )
+    )
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+
+        if not UserBase.objects.filter(email=email).exists():
+            raise ValidationError('Please enter a valid email.')
+
+        return email
+
+    def send_mail(self, subject_template_name, email_template_name, context, from_email, to_email, html_email_template_name):
+
+        # for now the reset link will be printed to terminal later it will be sent with celery
+        email = context.get('email')
+        domain = context.get('domain')
+        uid = context.get('uid')
+        token = context.get('token')
+
+        url = f"http://{domain}/accounts/reset/confirm/{uid}/{token}/"
+
+        print('\n\n\n')
+        print(url)
+        print('\n\n\n')
+
+
+
+class PasswordResetConfirmForm(SetPasswordForm):
+    new_password1 = forms.CharField(
+        label="New password",
+        strip=False,
+        widget=forms.PasswordInput(
+            attrs={
+                "autocomplete": "new-password",
+                'class': 'form-control',
+                'placeholder': 'Enter your new password.'
+        }),
+    )
+
+    new_password2 = forms.CharField(
+        label="New password confirmation",
+        strip=False,
+        widget=forms.PasswordInput(
+            attrs={
+                "autocomplete": "new-password",
+                'class': 'form-control',
+                'placeholder': 'Enter new password again.'
+        }),
+    )
