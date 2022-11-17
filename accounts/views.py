@@ -106,6 +106,7 @@ class UpdateProfileView(LoginRequiredMixin, FormView):
     def form_valid(self, form):
         if form.is_valid():
             form.save()
+            messages.success(request=self.request, message='Your profile has been updated successfully.')
         
         return super().form_valid(form)
 

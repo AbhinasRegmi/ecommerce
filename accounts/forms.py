@@ -254,7 +254,7 @@ class ResetYourPasswordForm(PasswordResetForm):
     def clean_email(self):
         email = self.cleaned_data['email']
 
-        if not UserBase.objects.filter(email=email).exists():
+        if not UserBase.objects.filter(email=email, is_active=True).exists():
             raise ValidationError('Please enter a valid email.')
 
         return email
