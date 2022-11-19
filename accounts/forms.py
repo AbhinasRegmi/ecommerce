@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
-from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
+from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm, AuthenticationForm
 from .models import UserBase
 
 
@@ -107,9 +107,9 @@ class RegistrationForm(forms.Form):
         return user
 
 
-class LoginForm(forms.Form):
+class LoginForm(AuthenticationForm):
 
-    email = forms.EmailField(
+    username = forms.EmailField(
         label='Email',
         required=True,
         max_length=50,
@@ -131,27 +131,6 @@ class LoginForm(forms.Form):
             }
         )
     )
-
-    def clean(self):
-        data = super().clean()
-
-        email = data.get('email')
-        password = data.get('password')
-
-
-        self.user = authenticate(email=email, password=password, is_active=True)
-        
-        if not self.user:
-            self.add_error(
-                field='email', 
-                error="Enter correct credentials. Are you sure you're verified?"
-            )
-
-        return data
-
-    def get_user(self):
-        return self.user
-
 
 
 class ProfileUpdateForm(forms.ModelForm):

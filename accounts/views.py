@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import login, logout
-from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
+from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
@@ -51,24 +51,10 @@ class LogoutView(View):
         logout(request)
         return HttpResponseRedirect(reverse_lazy('accounts:login'))
 
-class LoginView(FormView):
+class LoginUserView(LoginView):
     template_name = 'accounts/login.html'
     form_class = LoginForm
-
-    def get(self, request, *args: str, **kwargs):
-
-        if request.user.is_authenticated:
-            return HttpResponseRedirect(reverse_lazy('accounts:dashboard'))
-
-        return super().get(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        
-        if form.is_valid():
-            #if the form is valid the credentials are correct
-            login(self.request, form.get_user())
-            return HttpResponseRedirect(reverse_lazy('accounts:dashboard'))
-
+    success_url = reverse_lazy('accounts:dashboard')
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
