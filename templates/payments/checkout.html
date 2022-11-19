@@ -16,7 +16,7 @@ Checkout
                         <div class="col-12 col-lg-7 mx-auto">
 
 
-                            <form method="post" class="rounded mx-auto col-lg-10 p-4">
+                            <form method="post" class="rounded mx-auto col-lg-10 p-4" id="payment-form">
                                 {% csrf_token %}
 
                                 <div class="text-center">
@@ -24,13 +24,22 @@ Checkout
                                     <p class="mb-4">Your payment is encrypted. Secure for peace of mind.<br>
                                         <strong>orders will be sent to email below</strong>
                                     </p>
-                                    
                                 </div>
+
+                                <div id="card-errors" role="alert"></div>
                                 
 
                                 {{ form.as_p }}
 
-                                <button type="submit" class="form-control mt-4 btn btn-primary">Pay</button>
+                                <hr>
+
+                                <p>
+                                    <label for="id_card">Credit or debit Card*:</label>
+                                    <div id="card-element" class="form-control form-control-payment">
+                                    </div>
+                                </p>
+
+                                <button id="pay" type="button" class="form-control mt-4 btn btn-primary" client_secret="{{request.session.client_secret}}" onclick="pay_function()">Pay</button>
                                 
                             </form>
                         </div>
@@ -41,16 +50,17 @@ Checkout
     </div>
 </div>
 
+    
 
+{% endblock %}
 
+{% block scripts %}
+<script>
+let CSRF_TOKEN = '{{csrf_token}}';
+let PUB_KEY = '{{pub_key}}';
+let SUCCESS_URL = '{{success_url}}';
 
-
-
-
-
-
-
-
-
-
+</script>
+<script src="https://js.stripe.com/v3/"></script>
+<script src="{% static 'js/payments/checkout.js' %}" data-rel-js></script>
 {% endblock %}

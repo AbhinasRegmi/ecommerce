@@ -5,7 +5,7 @@ class CheckoutBasketForm(forms.ModelForm):
 
     firstname = forms.CharField(
         required=True, 
-        label='FirstName',
+        label='FirstName*',
         widget=forms.TextInput(
             attrs={
                 'placeholder': 'Enter your firstname here.',
@@ -16,7 +16,7 @@ class CheckoutBasketForm(forms.ModelForm):
 
     lastname = forms.CharField(
         required=True,
-        label='LastName',
+        label='LastName*',
         widget=forms.TextInput(
             attrs={
                 'placeholder': 'Enter your lastname here.',
@@ -26,7 +26,7 @@ class CheckoutBasketForm(forms.ModelForm):
     )
 
     email = forms.EmailField(
-        label='Email',
+        label='Email*',
         required=True,
         widget=forms.EmailInput(
             attrs={
@@ -50,11 +50,10 @@ class CheckoutBasketForm(forms.ModelForm):
 
     country = forms.Select(
         attrs={
-            'class': 'form-control'
+            'class': 'form-control',
         }
     )
-
-    
+ 
     class Meta:
         model = UserBase
         fields = ['firstname', 'lastname', 'email', 'phone','country']

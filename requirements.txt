@@ -4,6 +4,7 @@ django-dotenv
 pillow
 django-countries
 six
+stripe
 
 [dev-packages]
 coverage
