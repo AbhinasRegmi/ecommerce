@@ -7,10 +7,40 @@ Checkout
 
 {% block content %}
 
+<div class="container-fluid">
+    <div class="row no-gutter">
+        <div class="col-md-12">
+            <div class="login d-flex py-5 align-items-center">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-lg-7 mx-auto">
 
 
+                            <form method="post" class="rounded mx-auto col-lg-10 p-4">
+                                {% csrf_token %}
 
-<h1>Welcome to checkout.</h1>
+                                <div class="text-center">
+                                    <h2 class="font-weight-bold mb-2">Checkout your basket</h2>
+                                    <p class="mb-4">Your payment is encrypted. Secure for peace of mind.<br>
+                                        <strong>orders will be sent to email below</strong>
+                                    </p>
+                                    
+                                </div>
+                                
+
+                                {{ form.as_p }}
+
+                                <button type="submit" class="form-control mt-4 btn btn-primary">Pay</button>
+                                
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 
