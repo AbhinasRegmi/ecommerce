@@ -153,3 +153,7 @@ PASSWORD_RESET_TIMEOUT_DAYS = 1
 
 #site matching id
 SITE_ID=1
+
+#stripe keys
+STRIPE_PUB_KEY=os.environ.get('STRIPE_PUB_KEY')
+STRIPE_SEC_KEY=os.environ.get('STRIPE_SEC_KEY')
