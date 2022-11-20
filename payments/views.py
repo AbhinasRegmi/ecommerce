@@ -9,6 +9,9 @@ import stripe
 from .forms import CheckoutBasketForm
 from basket.basket import BasketSessions
 
+#set the stipe api key
+stripe.api_key = settings.STRIPE_SEC_KEY
+
 
 class PaymentIntentView(LoginRequiredMixin, RedirectView):
     pattern_name = 'payments:checkout'
@@ -17,29 +20,30 @@ class PaymentIntentView(LoginRequiredMixin, RedirectView):
         basket = BasketSessions(request=self.request)
         #from stripe api the amount must be in smallest price like paisa in NPR as int
         price = int(str(basket.getTotalPrice()).replace('.', ''))
+
         intent = stripe.PaymentIntent.create(
-            api_key=settings.STRIPE_SEC_KEY,
             amount=price,
             currency='npr',
+            payment_method_types=["card"],
+            description="Test description",
             metadata={
                 'uid': self.request.user.id,
-            }
+            },
         )
-
-        self.request.session['client_secret'] = intent.get('client_secret')
+        
+        self.request.session['client_secret'] = intent['client_secret']
         
         return super().get(request, *args, **kwargs)
 
-class PaymentIntentCancelView(LoginRequiredMixin, RedirectView):
-    pattern_name = 'basket:basket-sum-view'
+# class PaymentIntentCancelView(LoginRequiredMixin, RedirectView):
+#     pattern_name = 'basket:basket-sum-view'
+#     #we will implement this later.
 
-    #we will implement this later.
 
-
-    def get(self, request, *args, **kwargs):
-        intent_id = self.request.kwargs.get('intent_id')
-        stripe.PaymentIntent.cancel(intent_id)
-        return super().get(request, *args, **kwargs)
+#     def get(self, request, *args, **kwargs):
+#         intent_id = self.request.kwargs.get('intent_id')
+#         stripe.PaymentIntent.cancel(intent_id)
+#         return super().get(request, *args, **kwargs)
 
 class CheckoutView(LoginRequiredMixin, FormView):
     template_name = 'payments/checkout.html'

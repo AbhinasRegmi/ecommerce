@@ -1,72 +1,70 @@
-let pay_btn = document.getElementById('pay')
-let client_secret = pay_btn.getAttribute('client_secret')
-let errors = document.getElementById('card-errors')
+const stripe = Stripe(STRIPE_PUB_KEY);
 
-let _firstname = document.getElementById('id_firstname').value
-let _lastname = document.getElementById('id_lastname').value
-let _email = document.getElementById('id_email').value
-let _phone = document.getElementById('id_phone').value
-let _country = document.getElementById('id_country').value
+let elements;
+let errors = document.getElementById('card-errors');
 
-let stripe = Stripe(PUB_KEY)
-let elements = stripe.elements({clientSecret: client_secret})
-let card = elements.create('card')
+initialize();
+
+document
+  .querySelector("#payment-form")
+  .addEventListener("submit", handleSubmit);
+
+function initialize() {
+    
+    elements = stripe.elements({clientSecret: CLIENT_SECRET})
+
+    address = elements.create('address', {
+      mode: 'billing',
+    })
+
+    address.mount('#address-element')
+  
+    const paymentElementOptions = {
+      layout: "tabs",
+    };
+  
+    const paymentElement = elements.create("payment", paymentElementOptions);
+    paymentElement.mount("#payment-element");
+}
+
+async function handleSubmit(e) {
+  e.preventDefault();
+  setLoading(true);
+
+  const { error } = await stripe.confirmPayment({
+    elements,
+    confirmParams: {
+      // Make sure to change this to your payment completion page
+      return_url: "http://localhost:8000" + SUCCESS_URL,
+    },
+  }
+  );
+
+  if (error.type === "card_error" || error.type === "validation_error") {
+    showMessage(error.message);
+  } else {
+    showMessage("An unexpected error occurred. Try again later.");
+  }
+
+  setLoading(false);
+}
+
+function setLoading(isLoading) {
+  if (isLoading) {
+    // Disable the button and show a spinner
+    document.querySelector("#submit").disabled = true;
+    document.querySelector("#spinner").classList.remove("hidden");
+    document.querySelector("#button-text").classList.add("hidden");
+  } else {
+    document.querySelector("#submit").disabled = false;
+    document.querySelector("#spinner").classList.add("hidden");
+    document.querySelector("#button-text").classList.remove("hidden");
+  }
+}
 
 
-card.mount('#card-element')
-card.on(
-    'change',
-    (e) => {
-        if( e.error ){
-
-            errors.textContent = e.error.message
-            errors.classList.add('alert')
-            errors.classList.add('alert-danger')
-
-        }else{
-
-            errors.textContent = ''
-            errors.classList.remove('alert')
-            errors.classList.remove('alert-danger')
-        }
-    }
-)
-
-pay_function = () => {
-
-    pay_btn.textContent = ''
-    pay_btn.innerHTML = '<div class="spinner-border" role="status"></div>'
-
-    stripe.confirmPayment({
-        elements,
-        confirmParams: {
-          return_url: SUCCESS_URL,
-          payment_method_data: {
-            billing_details: {
-              name: _firstname + ' ' + _lastname,
-              email: _email,
-              phone: _phone,
-              address: {
-                country: _country,
-              }
-            }
-          },
-        },
-      }).then(
-        (res) => {
-
-            if(res.error){
-
-            errors.textContent = e.error.message
-            errors.classList.add('alert')
-            errors.classList.add('alert-danger')
-            }else{
-
-                if(res.paymentIntent.status == 'succeeded'){
-
-                    window.location.replace(SUCCESS_URL)
-                }
-            }
-        }
-    )
+function showMessage(messageText) {
+  errors.textContent = messageText
+  errors.classList.add('alert')
+  errors.classList.add('alert-danger')
 }
