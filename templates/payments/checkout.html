@@ -7,6 +7,17 @@
   let STRIPE_PUB_KEY = "{{pub_key}}";
   let CLIENT_SECRET = "{{request.session.client_secret}}";
   let SUCCESS_URL = "{{success_url}}";
+  let LINE = "{{request.user.line1}}";
+  let CITY = "{{request.user.city}}";
+  let CODE = "{{request.user.code}}";
+  let PHONE = "{{request.user.phone}}";
+  let COUNTRY = "{{request.user.country}}";
+  let NAME = "";
+
+  if ("{{request.user.firstname}}" != 'None'){
+    NAME = "{{request.user.firstname}}" + ' ' + "{{request.user.lastname}}";
+  }
+  
 </script>
 <script src="https://js.stripe.com/v3/"></script>
 <script src="{% static 'js/payments/checkout.js' %}" defer></script>
@@ -22,7 +33,7 @@
                 <div class="text-center">
                     <h2 class="font-weight-bold mb-2">Checkout your basket</h2>
                     <p class="mb-4">Your payment is encrypted. Secure for peace of mind.<br>
-                        <strong>orders will be sent to email below</strong>
+                        <strong>orders will be sent to your email.</strong>
                     </p>
                 </div>
                 <div id="card-errors" role="alert"></div>

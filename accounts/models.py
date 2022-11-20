@@ -47,6 +47,9 @@ class UserBase(AbstractBaseUser, PermissionsMixin):
 
     country = CountryField()
     phone = models.CharField(max_length=11, blank=True, null=True)
+    line1 = models.CharField(max_length=100, blank=True, null=True)
+    city = models.CharField(max_length=100, blank=True, null=True)
+    code = models.CharField(max_length=10, blank=True, null=True)
 
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)

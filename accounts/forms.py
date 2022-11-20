@@ -171,6 +171,43 @@ class ProfileUpdateForm(forms.ModelForm):
         )
     )
     
+
+    line1 = forms.CharField(
+        label='Address',
+        required=True,
+        max_length=99,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your address.'
+            }
+        )
+    )
+
+    city = forms.CharField(
+        label='City',
+        required=False,
+        max_length=99,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your city name.'
+            }
+        )
+    )
+
+    code = forms.CharField(
+        label='Postal Code',
+        required=True,
+        max_length=10,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your postal code.'
+            }
+        )
+    )
+
     country = forms.Select(
         attrs={
             'class': 'form-control'
@@ -191,7 +228,7 @@ class ProfileUpdateForm(forms.ModelForm):
     
     class Meta:
         model = UserBase
-        fields = ['firstname', 'lastname', 'profile', 'about', 'country', 'phone']
+        fields = ['firstname', 'lastname', 'profile', 'about', 'line1', 'city', 'code','country', 'phone']
 
     def clean_firstname(self):
         firstname = self.cleaned_data['firstname']

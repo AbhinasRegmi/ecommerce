@@ -3,29 +3,48 @@ const stripe = Stripe(STRIPE_PUB_KEY);
 let elements;
 let errors = document.getElementById('card-errors');
 
-initialize();
 
 document
   .querySelector("#payment-form")
   .addEventListener("submit", handleSubmit);
 
-function initialize() {
     
-    elements = stripe.elements({clientSecret: CLIENT_SECRET})
+elements = stripe.elements({clientSecret: CLIENT_SECRET})
 
-    address = elements.create('address', {
-      mode: 'billing',
+address = elements.create('address', {
+  mode: 'billing',
+  fields: {
+    phone: 'always',
+  },
+
+  defaultValues: {
+    name: NAME,
+    phone: PHONE,
+    address: {
+      line1: LINE,
+      city: CITY,
+      postal_code: CODE,
+      country: COUNTRY,
+    }
+  },
+
+  validation: {
+    phone: {
+      required: 'always',
+    },
+      }
     })
 
-    address.mount('#address-element')
+address.mount('#address-element')
+
+const paymentElementOptions = {
+  layout: "tabs",
+};
   
-    const paymentElementOptions = {
-      layout: "tabs",
-    };
-  
-    const paymentElement = elements.create("payment", paymentElementOptions);
-    paymentElement.mount("#payment-element");
-}
+const paymentElement = elements.create("payment", paymentElementOptions);
+paymentElement.mount("#payment-element");
+country.value = 'NP';
+console.log(country.value)
 
 async function handleSubmit(e) {
   e.preventDefault();
