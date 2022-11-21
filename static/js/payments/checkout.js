@@ -43,8 +43,6 @@ const paymentElementOptions = {
   
 const paymentElement = elements.create("payment", paymentElementOptions);
 paymentElement.mount("#payment-element");
-country.value = 'NP';
-console.log(country.value)
 
 async function handleSubmit(e) {
   e.preventDefault();

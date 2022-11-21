@@ -158,3 +158,4 @@ SITE_ID=1
 #stripe keys
 STRIPE_PUB_KEY=os.environ.get('STRIPE_PUB_KEY')
 STRIPE_SEC_KEY=os.environ.get('STRIPE_SEC_KEY')
+STRIPE_HOOK_KEY=os.environ.get('STRIPE_HOOK_KEY')
