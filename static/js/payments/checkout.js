@@ -48,20 +48,39 @@ async function handleSubmit(e) {
   e.preventDefault();
   setLoading(true);
 
-  const { error } = await stripe.confirmPayment({
-    elements,
-    confirmParams: {
-      // Make sure to change this to your payment completion page
-      return_url: "http://localhost:8000" + SUCCESS_URL,
-    },
-  }
-  );
 
-  if (error.type === "card_error" || error.type === "validation_error") {
-    showMessage(error.message);
-  } else {
-    showMessage("An unexpected error occurred. Try again later.");
+  console.log(fullname);
+  data = {
+    'order_key': CLIENT_SECRET,
   }
+
+  fetch(URL, {
+    method: 'post',
+    headers: {"X-CSRFToken": CSRF_TOKEN},
+    body: JSON.stringify(data),
+  }).then(
+    res => res.json()
+  ).then(
+    data => {
+      console.log(data)
+    }
+  )
+
+
+  // const { error } = await stripe.confirmPayment({
+  //   elements,
+  //   confirmParams: {
+  //     // Make sure to change this to your payment completion page
+  //     return_url: "http://localhost:8000" + SUCCESS_URL,
+  //   },
+  // }
+  // );
+
+  // if (error.type === "card_error" || error.type === "validation_error") {
+  //   showMessage(error.message);
+  // } else {
+  //   showMessage("An unexpected error occurred. Try again later.");
+  // }
 
   setLoading(false);
 }
