@@ -2,7 +2,8 @@ const stripe = Stripe(STRIPE_PUB_KEY);
 
 let elements;
 let errors = document.getElementById('card-errors');
-
+let count = document.getElementById('product-count');
+let message = document.getElementById('message');
 
 document
   .querySelector("#payment-form")
@@ -48,8 +49,6 @@ async function handleSubmit(e) {
   e.preventDefault();
   setLoading(true);
 
-
-  console.log(fullname);
   data = {
     'order_key': CLIENT_SECRET,
   }
@@ -62,25 +61,24 @@ async function handleSubmit(e) {
     res => res.json()
   ).then(
     data => {
-      console.log(data)
+
     }
   )
 
+  const { error } = await stripe.confirmPayment({
+    elements,
+    confirmParams: {
+      // Make sure to change this to your payment completion page
+      return_url: "http://localhost:8000" + SUCCESS_URL,
+    },
+  }
+  );
 
-  // const { error } = await stripe.confirmPayment({
-  //   elements,
-  //   confirmParams: {
-  //     // Make sure to change this to your payment completion page
-  //     return_url: "http://localhost:8000" + SUCCESS_URL,
-  //   },
-  // }
-  // );
-
-  // if (error.type === "card_error" || error.type === "validation_error") {
-  //   showMessage(error.message);
-  // } else {
-  //   showMessage("An unexpected error occurred. Try again later.");
-  // }
+  if (error.type === "card_error" || error.type === "validation_error") {
+    showMessage(error.message);
+  } else {
+    showMessage("An unexpected error occurred. Try again later.");
+  }
 
   setLoading(false);
 }

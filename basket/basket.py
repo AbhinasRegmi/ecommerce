@@ -90,5 +90,8 @@ class BasketSessions():
         else:
             return None
 
+    def deleteAllSession(self, request):
+        del request.session['basket_skey']
+
         
         
