@@ -8,12 +8,14 @@ from django.urls import reverse_lazy
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.views.generic import FormView, TemplateView, View
-from django.views.generic.edit import UpdateView
+from django.views.generic.list import ListView
 
 from .forms import RegistrationForm, LoginForm, ProfileUpdateForm, ResetYourPasswordForm, PasswordResetConfirmForm
 from .tasks import SendVerificationToken
 from .models import UserBase
 from .token import account_verfication_token
+
+from orders.models import Order, OrderItem
 
 
 class RegistrationView(FormView):
@@ -57,8 +59,28 @@ class LoginUserView(LoginView):
     success_url = reverse_lazy('accounts:dashboard')
 
 
-class DashboardView(LoginRequiredMixin, TemplateView):
+class DashboardView(LoginRequiredMixin, ListView):
     template_name = 'accounts/dashboard.html'
+    queryset = Order.objects.filter().order_by('-updated_at')
+    context_object_name = 'order_list'
+    paginate_by = 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def activate_view(request, uidb64, token):

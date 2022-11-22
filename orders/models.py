@@ -8,13 +8,6 @@ from store.models import Product
 
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    # fullname = models.CharField(max_length=100)
-
-    # country = CountryField()
-    # phone = models.CharField(max_length=11, blank=True, null=True)
-    # line1 = models.CharField(max_length=100, blank=True, null=True)
-    # city = models.CharField(max_length=100, blank=True, null=True)
-    # code = models.CharField(max_length=10, blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -38,7 +31,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
     unit_price = models.DecimalField(max_digits=5, decimal_places=2)
@@ -46,3 +39,6 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+    def total_amount(self):
+        return self.unit_price * self.quantity

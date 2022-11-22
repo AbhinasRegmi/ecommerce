@@ -7,18 +7,20 @@
 
 {% block content %}
 
+<link rel="stylesheet" href="{% static 'css/accounts/dashboard.css' %}">
+
 <main class="pt-5">
     <div class="container" style="max-width: 1000px;">
 
         <div class="col-12 row">
-            <h2 class="h2 col"> 
+            <h2 class="h2 col fw-normal"> 
                 Hi! {{user.username|upper}} 
             </h2>
 
             {% if user.profile %}
                 <img class="col rounded-circle img-fluid" style="max-height: 5rem; max-width: 5rem;"  src="{{user.profile.url}}">
             {% else %}
-                <img class="col rounded-circle" style="max-height: 6rem; max-width: 6rem;" src="{% static 'images/defaultprofile.jpg' %}">
+                <img class="col rounded-circle img-fluid" style="max-height: 6rem; max-width: 6rem;" src="{% static 'images/defaultprofile.jpg' %}">
             {% endif %}
 
         </div>
@@ -33,11 +35,78 @@
         </div>
 
         <hr>
+
+
+        <div class="container">
+            <div class="breadcrum h4 fw-normal">
+                My Orders
+            </div>
+            <div class="row mt-5  text-center">
+                <div class="col-3 border-light border-2 border-bottom border-dark border-3" id="all">All</div>
+                <div class="col-3 border-light border-2 border-bottom" id="paid">Paid</div>
+                <div class="col-3 border-light border-2 border-bottom" id="topay">To Pay</div>
+            </div>
+
+            <div class="container-fluid">
+            {% if order_list %}
+
+                {% for order in order_list %}
+
+                    <div class="row bg-light my-4 rounded">
+                        <div class="col-8">
+                            <p class="fw-small mb-0">Order <b>{{order.intent}}</b></p>
+                            <div class="fs-6 mt-0">Placed on {{order.updated_at}}</div>
+                        </div>
+
+                        <div class="col"></div>
+
+                        {% if order.billing_status %}
+                        <button type="button" class="btn btn-warning col-3 my-1 mx-1">Rate</button>
+                        {% else %}
+                        <button type="button" class="btn btn-warning col-3 my-1 mx-1">Pay Now (Rs{{order.total_amount}})</button>
+                        {% endif %}
+
+
+                        <hr>
+                        <div class="container-fluid">
+                            
+                            {% for item in order.items.all %}
+                            
+                                <div class="row container-fluid">
+                                    <div class="col"><img src="{{item.product.image.url}}" alt="{{item.product.slug}}"></div>
+                                    <div class="col">{{item.product.title}}</div>
+                                    <div class="col">Qty: <b>{{item.quantity}}</b></div>
+                                    
+                                    {% if order.billing_status %}
+                                        <button type="button" class="btn btn-success col-3 my-1 mx-1">Payment Done</button>
+                                    {% else %}
+                                        <button type="button" class="btn btn-danger col-3 my-1 mx-1">Payment Pending</button>
+                                    {% endif %}
+
+                                    <div class="col">Unit price: Rs{{item.unit_price}}</div>
+                                    <div class="col">Total: Rs{{item.total_amount}}</div>
+
+                                </div>
+
+
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        </div>
+
+
     </div>
 
 
 
     <div class="container" style="max-width: 1000px;"></div>
 </main>
+
+
+<script src="{% static 'js/accounts/dashboard.js' %}"></script>
     
 {% endblock %}
