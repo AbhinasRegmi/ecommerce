@@ -6,6 +6,7 @@
 <script>
   let STRIPE_PUB_KEY = "{{pub_key}}";
   let CLIENT_SECRET = "{{request.session.client_secret}}";
+  let PAYMENT_INTENT = "{{request.session.payment_intent}}";
   let SUCCESS_URL = "{{success_url}}";
   let LINE = "{{request.user.line1}}";
   let CITY = "{{request.user.city}}";

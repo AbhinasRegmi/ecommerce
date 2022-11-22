@@ -26,11 +26,12 @@ Cart
             </div>
           <div class="col-6 row">
               <a role="button" href="{% url 'payments:intent' %}" class="btn btn-success fw-bold col-6" type="button">Checkout</a>
-              <button class="btn btn-light col-6" type="button">Save for later</button>
+              <button onclick="save_order()" class="btn btn-light col-6" type="button">Save for later</button>
           </div>
           </div>
         {% endif %}
 
+        <div id="container_products">
         {% for item in basket %}
 
             {% with product=item.product %}
@@ -110,6 +111,7 @@ Cart
               
             {% endwith %}
         {% endfor %}
+      </div>
 
     </div>
 
@@ -127,6 +129,8 @@ Cart
     let count = document.getElementById('product-count')
     let total = document.getElementById('total_price')
     let message = document.getElementById('message')
+    let save = document.getElementById('save')
+
 
     data = {
         'product_id': value,
@@ -154,9 +158,10 @@ Cart
 
   DeleteFunction = (value) =>{
 
-    let count = document.getElementById('product-count')
     let total = document.getElementById('total_price')
     let message = document.getElementById('message')
+    let count = document.getElementById('product-count')
+
 
       data = {
         'product_id': value
@@ -172,7 +177,6 @@ Cart
         if( data['delete'] == 'ok'){
           
           let container = document.getElementById('container_' + value )
-
           container.textContent = ''
           container.remove()
 
@@ -188,6 +192,34 @@ Cart
       })
   }
 
+
+save_order = () => {
+  let count = document.getElementById('product-count')
+  let products = document.getElementById('container_products');
+  let total = document.getElementById('total_price')
+
+
+  fetch(
+    "{% url 'orders:save' %}",{
+      method: "GET",
+      headers: { "X-CSRFToken": '{{csrf_token}}' },
+    }
+  ).then(res => res.json()).then(
+
+    data => {
+
+      if( data['success'] == 'ok'){
+        total.innerText = "Total: Rs " + '0';
+        count.innerText = 0
+        checkout.innerHTML = ''
+        products.innerText = ''
+        message.innerHTML = `<div type='button' data-dismiss='alert' class="col-11 text-center alert alert-success alert-dismissible fade show" role="alert">${data['message']}</div>`;
+      }
+    }
+  )
+
+
+}
 
 </script>
 {% endblock %}

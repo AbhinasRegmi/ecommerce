@@ -1,33 +1,27 @@
+import json
 from django.http import JsonResponse
 from django.views.generic import View
-import json
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Order, OrderItem
+from payments.views import createPaymentIntent as create_intent
 from basket.basket import BasketSessions
 
 
-class OrderAddView(View):
-    http_method_names = ['post']
+def add_orders(request, intent):
+    session = BasketSessions(request)
+    order_key = intent
+    total_price = session.getTotalPrice()
 
-    def post(self, request, *args, **kwargs):
+    data = {}
 
-        post_data = json.loads(self.request.body)
-        session = BasketSessions(self.request)
-
-        order_key = post_data.get('order_key')
-        total_price = session.getTotalPrice()
-
-        data = {}
-
-        if not Order.objects.filter(order_key=order_key).exists():
+    if not Order.objects.filter(order_key=order_key).exists():
             # create a new order.
             order = Order.objects.create(
-                user=self.request.user,
+                user=request.user,
                 total_amount=total_price,
                 order_key=order_key
             )
-
 
             #add all the products in basket to orderItem
             for item in session:
@@ -39,11 +33,28 @@ class OrderAddView(View):
                 )
             
             #also delete the products from the session
-            session.deleteAllSession(request=self.request)
+            session.deleteAllSession(request=request)
 
             data = {
             'success' : 'ok',
             'message': 'Check you dashboard for orders placed.'
-        }
+            }
 
+    return data
+
+
+class OrderAddView(LoginRequiredMixin, View):
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        data = add_orders(request=self.request, intent=json.loads(self.request.body).get('order_key'))
+        return JsonResponse(data)
+
+
+class OrderSaveView(LoginRequiredMixin, View):
+    http_method_names = ['get']
+
+    def get(self, request, *args, **kwargs):
+        _, intent = create_intent(request=self.request)
+        data = add_orders(request=self.request, intent=intent)
         return JsonResponse(data)

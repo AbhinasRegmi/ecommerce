@@ -5,6 +5,7 @@ let errors = document.getElementById('card-errors');
 let count = document.getElementById('product-count');
 let message = document.getElementById('message');
 
+
 document
   .querySelector("#payment-form")
   .addEventListener("submit", handleSubmit);
@@ -50,7 +51,7 @@ async function handleSubmit(e) {
   setLoading(true);
 
   data = {
-    'order_key': CLIENT_SECRET,
+    'order_key': PAYMENT_INTENT,
   }
 
   fetch(URL, {
