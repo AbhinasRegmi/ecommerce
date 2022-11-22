@@ -204,21 +204,21 @@ save_order = () => {
       method: "GET",
       headers: { "X-CSRFToken": '{{csrf_token}}' },
     }
-  ).then(res => res.json()).then(
-
-    data => {
-
-      if( data['success'] == 'ok'){
+  ).then(res => res.json())
+  .then(data => { 
+    if( data['success'] == 'ok'){
         total.innerText = "Total: Rs " + '0';
         count.innerText = 0
         checkout.innerHTML = ''
         products.innerText = ''
         message.innerHTML = `<div type='button' data-dismiss='alert' class="col-11 text-center alert alert-success alert-dismissible fade show" role="alert">${data['message']}</div>`;
       }
-    }
-  )
+  })
+  .catch( ()=> { 
+    message.innerHTML = `<div type='button' data-dismiss='alert' class="col-11 text-center alert alert-danger alert-dismissible fade show" role="alert">You need to login to save orders for later.</div>`;
+  })
 
-
+  
 }
 
 </script>

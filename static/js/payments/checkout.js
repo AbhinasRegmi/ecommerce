@@ -51,7 +51,8 @@ async function handleSubmit(e) {
   setLoading(true);
 
   data = {
-    'order_key': PAYMENT_INTENT,
+    'intent': PAYMENT_INTENT,
+    'secret': CLIENT_SECRET
   }
 
   fetch(URL, {

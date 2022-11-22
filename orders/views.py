@@ -8,19 +8,19 @@ from payments.views import createPaymentIntent as create_intent
 from basket.basket import BasketSessions
 
 
-def add_orders(request, intent):
+def add_orders(request, intent, secret):
     session = BasketSessions(request)
-    order_key = intent
     total_price = session.getTotalPrice()
 
     data = {}
 
-    if not Order.objects.filter(order_key=order_key).exists():
+    if not Order.objects.filter(intent=intent, secret=secret).exists():
             # create a new order.
             order = Order.objects.create(
                 user=request.user,
                 total_amount=total_price,
-                order_key=order_key
+                intent=intent,
+                secret=secret
             )
 
             #add all the products in basket to orderItem
@@ -47,7 +47,8 @@ class OrderAddView(LoginRequiredMixin, View):
     http_method_names = ['post']
 
     def post(self, request, *args, **kwargs):
-        data = add_orders(request=self.request, intent=json.loads(self.request.body).get('order_key'))
+        body = json.loads(self.request.body)
+        data = add_orders(request=self.request, intent=body.get('intent'), secret=body.get('secret'))
         return JsonResponse(data)
 
 
@@ -55,6 +56,6 @@ class OrderSaveView(LoginRequiredMixin, View):
     http_method_names = ['get']
 
     def get(self, request, *args, **kwargs):
-        _, intent = create_intent(request=self.request)
-        data = add_orders(request=self.request, intent=intent)
+        secret, intent = create_intent(request=self.request)
+        data = add_orders(request=self.request, intent=intent, secret=secret)
         return JsonResponse(data)

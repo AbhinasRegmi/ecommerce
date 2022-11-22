@@ -86,7 +86,7 @@ class PaymentConfirmationWebhook(CSRFexemptMixin, View):
             )
 
             if event.type == 'charge.succeeded':
-                Order.objects.filter(order_key=event.data.object.payment_intent).update(billing_status=True)
+                Order.objects.filter(intent=event.data.object.payment_intent).update(billing_status=True)
 
         except ValueError as e:
             return HttpResponse(status=400)
