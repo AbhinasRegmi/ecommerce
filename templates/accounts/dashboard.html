@@ -13,12 +13,12 @@
     <div class="container" style="max-width: 1000px;">
 
         <div class="col-12 row">
-            <h2 class="h2 col fw-normal"> 
+            <h2 class="h2 col-8 col-lg-10 fw-normal"> 
                 Hi! {{user.username|upper}} 
             </h2>
 
             {% if user.profile %}
-                <img class="col rounded-circle img-fluid" style="max-height: 5rem; max-width: 5rem;"  src="{{user.profile.url}}">
+                <img class="col-4 col-lg-2 rounded-circle img-fluid"   src="{{user.profile.url}}">
             {% else %}
                 <img class="col rounded-circle img-fluid" style="max-height: 6rem; max-width: 6rem;" src="{% static 'images/defaultprofile.jpg' %}">
             {% endif %}
@@ -61,9 +61,9 @@
                         <div class="col"></div>
 
                         {% if order.billing_status %}
-                        <button type="button" class="btn btn-warning col-3 my-1 mx-1">Rate</button>
+                            <button type="button" class="btn btn-warning col-3 my-1 mx-1">Rate</button>
                         {% else %}
-                        <button type="button" class="btn btn-warning col-3 my-1 mx-1">Pay Now (Rs{{order.total_amount}})</button>
+                            <button type="button" class="btn btn-warning col-3 my-1 mx-1">Pay Now (Rs{{order.total_amount}})</button>
                         {% endif %}
 
 
@@ -72,15 +72,15 @@
                             
                             {% for item in order.items.all %}
                             
-                                <div class="row container-fluid">
-                                    <div class="col"><img src="{{item.product.image.url}}" alt="{{item.product.slug}}"></div>
+                                <div class="row container-fluid my-1">
+                                    <div class="col"><img class="img-thumbnail" src="{{item.product.image.url}}" alt="{{item.product.slug}}"></div>
                                     <div class="col">{{item.product.title}}</div>
                                     <div class="col">Qty: <b>{{item.quantity}}</b></div>
                                     
                                     {% if order.billing_status %}
-                                        <button type="button" class="btn btn-success col-3 my-1 mx-1">Payment Done</button>
+                                        <div class="bg-success col-3 text-center h-25 rounded text-white text-small">Paid</div>
                                     {% else %}
-                                        <button type="button" class="btn btn-danger col-3 my-1 mx-1">Payment Pending</button>
+                                        <div class="bg-danger col-3 text-center h-25 rounded text-white ">Unpaid</div>
                                     {% endif %}
 
                                     <div class="col">Unit price: Rs{{item.unit_price}}</div>
