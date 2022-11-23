@@ -2,12 +2,12 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
-from django.views.generic import FormView, TemplateView, View
+from django.views.generic import FormView, View
 from django.views.generic.list import ListView
 
 from .forms import RegistrationForm, LoginForm, ProfileUpdateForm, ResetYourPasswordForm, PasswordResetConfirmForm
@@ -15,7 +15,8 @@ from .tasks import SendVerificationToken
 from .models import UserBase
 from .token import account_verfication_token
 
-from orders.models import Order, OrderItem
+from orders.models import Order
+
 
 
 class RegistrationView(FormView):
@@ -61,9 +62,30 @@ class LoginUserView(LoginView):
 
 class DashboardView(LoginRequiredMixin, ListView):
     template_name = 'accounts/dashboard.html'
-    queryset = Order.objects.filter().order_by('-updated_at')
     context_object_name = 'order_list'
-    paginate_by = 2
+    paginate_by = 5
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user).order_by('-updated_at')
+
+
+class DashBoardFilterView(LoginRequiredMixin, ListView):
+    template_name = 'accounts/dashboard.html'
+    context_object_name = 'order_list'
+    paginate_by = 5
+
+    def get(self, request, *args, **kwargs):
+        self.filter = kwargs['filter']
+        return super().get(request, *args, **kwargs)
+
+  
+    def get_queryset(self):
+        if self.filter == 'paid':
+            return Order.objects.filter(user=self.request.user, billing_status=True).order_by('-updated_at')
+        elif self.filter == 'topay':
+            return Order.objects.filter(user=self.request.user, billing_status=False).order_by('-updated_at')
+        else:
+            raise Http404
 
 
 

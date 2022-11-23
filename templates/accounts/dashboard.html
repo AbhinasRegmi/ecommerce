@@ -42,9 +42,9 @@
                 My Orders
             </div>
             <div class="row mt-5  text-center">
-                <div class="col-3 border-light border-2 border-bottom border-dark border-3" id="all">All</div>
-                <div class="col-3 border-light border-2 border-bottom" id="paid">Paid</div>
-                <div class="col-3 border-light border-2 border-bottom" id="topay">To Pay</div>
+                <a class="text-decoration-none text-dark col-3" href='{% url "accounts:dashboard" %}'><div class=" border-light border-2 border-bottom border-dark border-3" id="all">All</div></a>
+                <a class="text-decoration-none text-dark col-3" href='{% url "accounts:dashboard_filter" "paid" %}'><div class=" border-light border-2 border-bottom" id="paid">Paid</div></a>
+                <a class="text-decoration-none text-dark col-3" href='{% url "accounts:dashboard_filter" "topay" %}'><div class="border-light border-2 border-bottom" id="topay">To Pay</div></a>
             </div>
 
             <div class="container-fluid">
@@ -94,6 +94,36 @@
                         </div>
                     </div>
                 {% endfor %}
+
+
+                <div class="container" style="max-width: 1000px;">
+        
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                          <li class="page-item">
+                            {% if page_obj.has_previous %}
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                            {% endif %}
+                          </li>
+                          {% for page in page_obj.paginator.page_range %}
+                          
+                            {% if page == page_obj.number %}
+                                <li class="page-item active">
+                            {% else %}
+                                <li class="page-item ">
+                            {% endif %}
+                                <a class="page-link" href="?page={{ page }}">{{page}}</a>
+                            </li>
+                          {% endfor %}
+                          <li class="page-item">
+                            {% if page_obj.has_next %}
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                            {% endif %}
+                          </li>
+                        </ul>
+                      </nav>
+                </div>
+
             {% endif %}
         </div>
         </div>
@@ -101,9 +131,6 @@
 
     </div>
 
-
-
-    <div class="container" style="max-width: 1000px;"></div>
 </main>
 
 

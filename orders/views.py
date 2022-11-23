@@ -59,3 +59,8 @@ class OrderSaveView(LoginRequiredMixin, View):
         secret, intent = create_intent(request=self.request)
         data = add_orders(request=self.request, intent=intent, secret=secret)
         return JsonResponse(data)
+
+
+
+def order_filter_view(request, filter_name):
+    pass
