@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import RedirectView, View
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import FormView
 from django.http import HttpResponse
 from django.urls import reverse_lazy
@@ -42,6 +43,20 @@ class PaymentIntentView(LoginRequiredMixin, RedirectView):
         self.request.session['payment_intent'] = intent
 
         return super().get(request, *args, **kwargs)
+
+class CheckoutSavedItem(LoginRequiredMixin, View):
+    pattern_name = 'payments:checkout'
+
+    def get(self, request, *args, **kwargs):
+
+        intent = self.kwargs.get('intent')
+        secret = get_object_or_404(Order, intent=intent).secret
+
+        self.request.session['client_secret'] = secret
+        self.request.session['payment_intent'] = intent
+
+        #since we don't need the payment intent in checkout url we won't use super
+        return redirect(reverse_lazy(self.pattern_name))
 
 
 class CheckoutView(LoginRequiredMixin, FormView):

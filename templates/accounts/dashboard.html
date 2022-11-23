@@ -63,7 +63,7 @@
                         {% if order.billing_status %}
                             <button type="button" class="btn btn-warning col-3 my-1 mx-1">Rate</button>
                         {% else %}
-                            <button type="button" class="btn btn-warning col-3 my-1 mx-1">Pay Now (Rs{{order.total_amount}})</button>
+                            <a role="button" href="{% url 'payments:saved' order.intent %}" class="btn btn-warning col-3 my-1 mx-1">Pay Now (Rs{{order.total_amount}})</a>
                         {% endif %}
 
 
