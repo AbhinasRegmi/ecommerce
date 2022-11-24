@@ -8,3 +8,4 @@ stripe
 
 [dev-packages]
 coverage
+django-debug-toolbar
