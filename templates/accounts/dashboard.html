@@ -55,13 +55,13 @@
                     <div class="row bg-light my-4 rounded">
                         <div class="col-8">
                             <p class="fw-small mb-0">Order <b>{{order.intent}}</b></p>
-                            <div class="fs-6 mt-0">Placed on {{order.updated_at}}</div>
+                            <div class="fs-6 mt-0">Placed on {{order.created_at}}</div>
                         </div>
 
                         <div class="col"></div>
 
                         {% if order.billing_status %}
-                            <button type="button" class="btn btn-warning col-3 my-1 mx-1">Rate</button>
+                        <a role="button" href="#report" class="btn btn-warning col-3 my-1 mx-1">Report a problem</a>
                         {% else %}
                             <a role="button" href="{% url 'payments:saved' order.intent %}" class="btn btn-warning col-3 my-1 mx-1">Pay Now (Rs{{order.total_amount}})</a>
                         {% endif %}
@@ -78,13 +78,14 @@
                                     <div class="col">Qty: <b>{{item.quantity}}</b></div>
                                     
                                     {% if order.billing_status %}
-                                        <div class="bg-success col-3 text-center h-25 rounded text-white text-small">Paid</div>
+                                        <div class="bg-success col text-center h-25  text-white text-small">Paid</div>
                                     {% else %}
-                                        <div class="bg-danger col-3 text-center h-25 rounded text-white ">Unpaid</div>
+                                        <div class="bg-danger col text-center h-25 text-white ">Unpaid</div>
                                     {% endif %}
 
                                     <div class="col">Unit price: Rs{{item.unit_price}}</div>
                                     <div class="col">Total: Rs{{item.total_amount}}</div>
+                                    <a role="button" href="#review" class="btn btn-secondary col-3 h-25">Review</a>
 
                                 </div>
 
