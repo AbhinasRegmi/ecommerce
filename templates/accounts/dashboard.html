@@ -61,7 +61,7 @@
                         <div class="col"></div>
 
                         {% if order.billing_status %}
-                        <a role="button" href="#report" class="btn btn-warning col-3 my-1 mx-1">Report a problem</a>
+                            <a role="button" href="#report" class="btn btn-warning col-3 my-1 mx-1">Report a problem</a>
                         {% else %}
                             <a role="button" href="{% url 'payments:saved' order.intent %}" class="btn btn-warning col-3 my-1 mx-1">Pay Now (Rs{{order.total_amount}})</a>
                         {% endif %}
@@ -85,8 +85,10 @@
 
                                     <div class="col">Unit price: Rs{{item.unit_price}}</div>
                                     <div class="col">Total: Rs{{item.total_amount}}</div>
-                                    <a role="button" href="#review" class="btn btn-secondary col-3 h-25">Review</a>
 
+                                    {% if order.billing_status %}
+                                        <a role="button" href="#review" class="btn btn-secondary col-3 h-25">Review</a>
+                                    {% endif %}
                                 </div>
 
 

@@ -5,6 +5,7 @@ pillow
 django-countries
 six
 stripe
+django-mptt
 
 [dev-packages]
 coverage
