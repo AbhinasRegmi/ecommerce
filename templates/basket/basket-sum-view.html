@@ -40,17 +40,19 @@ Cart
                 <div class="pt-2">
                   <div class="row g-3 bg-light py-1">
                     <div class="col-md-5 col-lg-5 order-md-first bg-light">
-                      <img
-                        class="img-fluid mx-auto d-block"
-                        loading="lazy"
-                        src="{{ product.image.url }}"
-                        alt="{{product.slug}}"
-                        style="max-height:200px;max-width: 300px;"
-                      />
+                      {% if product.images %}
+                        {% for image in product.images.all %}
+                          {% if image.is_featured %}
+                            <div class="carousel-item active">
+                                <img class="d-block" src="{{image.image.url}}" style="height: 200px;">
+                            </div>
+                          {% endif %}
+                        {% endfor %}
+                      {% endif %}
                     </div>
                     <div class="col-md-7 col-lg-7 ps-md-3 ps-lg-5">
-                      <h1 class="mb-0 h4">{{ product.title }}</h1>
-                      <p><span class="lead">{{ product.author }}</span> (Merchant)</p>
+                      <h1 class="mb-0 h4 fw-normal">{{ product.title }}</h1>
+                      
               
                       <div class="border">
                         <div class="col border-bottom">
@@ -126,7 +128,7 @@ Cart
   UpdateFunction = (value) => {
     let items = document.getElementById('select_' + value)
     let checkout = document.getElementById('checkout')
-    let count = document.getElementById('product-count')
+    let count = document.getElementById('basket_count')
     let total = document.getElementById('total_price')
     let message = document.getElementById('message')
     let save = document.getElementById('save')
@@ -160,7 +162,6 @@ Cart
 
     let total = document.getElementById('total_price')
     let message = document.getElementById('message')
-    let count = document.getElementById('product-count')
 
 
       data = {
@@ -175,7 +176,7 @@ Cart
       }).then( res => res.json()).then( data => {
 
         if( data['delete'] == 'ok'){
-          
+          let count = document.getElementById('basket_count')
           let container = document.getElementById('container_' + value )
           container.textContent = ''
           container.remove()

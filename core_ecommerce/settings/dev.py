@@ -5,11 +5,11 @@ ALLOWED_HOSTS = ['localhost']
 
 INSTALLED_APPS += [
     #third party
-    'debug_toolbar'
+    # 'debug_toolbar'
 ]
 
 MIDDLEWARE += [ 
-    'debug_toolbar.middleware.DebugToolbarMiddleware'
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware'
 ]
 
 INTERNAL_IPS = [

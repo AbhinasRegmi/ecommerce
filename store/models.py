@@ -84,6 +84,7 @@ class ProductSpecification(models.Model):
     product_type = models.ForeignKey(
         'ProductType',
         on_delete=models.RESTRICT,
+        related_name='specifications'
     )
 
     class Meta:
@@ -162,6 +163,7 @@ class ProductSpecificationValue(models.Model):
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
+        related_name='specification_value'
     )
     specification = models.ForeignKey(
         ProductSpecification,
