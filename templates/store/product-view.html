@@ -8,34 +8,33 @@
 
 {% block content %}
 
-<div class="container pt-sm-0 pt-md-5">
-  <div class="pt-5">
-    <div class="row g-3 bg-light py-1">
-      <div class="col-md-5 col-lg-5 order-md-first bg-light">
-        <img
-          class="img-fluid mx-auto d-block"
-          loading="lazy"
-          src="{{ product.image.url }}"
-          alt="{{product.slug}}"
-          style="max-height:300px;max-width: 300px;"
-        />
-      </div>
-      <div class="col-md-7 col-lg-7 ps-md-3 ps-lg-5">
-        <h1 class="mb-0 h4">{{ product.title }}</h1>
-        <p><span class="lead">{{ product.author }}</span> (Merchant)</p>
-        <p>{{ product.description }}</p>
+{% load mptt_tags %}
 
-        <div class="border">
-          <div class="col border-bottom">
-            <div class="row p-3">
-              <div class="col-6">Digital</div>
-              <div class="col-6 text-end">
-                <span class="h4 fw-bold">Rs. {{ product.price }}</span>
-              </div>
-            </div>
-          </div>
+<div class="container bg-light mt-5 mx-lg-5 mx-sm-0">
+    <nav 
+    style="--bs-breadcrumb-divider: '>';" 
+    aria-label="breadcrumb"
+    >
+      <ol class="breadcrumb">
+        {% recursetree category_tree %}
+        {% if not node.is_leaft_node %}
+        <a class="text-decoration-none breadcrumb-item text-primary" href="#shop">{{ node.name }}</a>
+        <li class="breadcrumb-item"><a class="text-decoration-none text-primary" href="#shop">{{ children }}</a></li>
+        {% endif %}
+        {% endrecursetree %}
+        <li>{{product.title|truncatechars:10}}</li>
+      </ol>
+    </nav>
 
-          <div class="col">
+
+
+
+
+</div>  
+
+
+
+          <!-- <div class="col">
             <div class="row p-3">
               <div class="col-6">
                 <label for="select">Qty</label>
@@ -48,14 +47,25 @@
               </div>
 
               <div class="col-6 text-end">
-                <button
+                {% if product.in_stock %}
+                  <button
+                    type="button"
+                    class="btn btn-secondary btn-sm"
+                    id="cart"
+                    value="{{product.pk}}"
+                  >
+                    Add to Cart
+                  </button>
+                {% else %}
+                  <button
                   type="button"
                   class="btn btn-secondary btn-sm"
-                  id="cart"
+                  id="wishlist"
                   value="{{product.pk}}"
                 >
-                  Add to Cart
+                  Add to Wishlist
                 </button>
+                {% endif %}
               </div>
             </div>
           </div>
@@ -63,7 +73,7 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 
 
 <script>
@@ -71,26 +81,36 @@
     let items = document.getElementById('select')
     let count = document.getElementById('product-count')
 
-    cart.onclick = () => {
+    if(cart){
+      cart.onclick = () => {
       
-        data = {
-            'product_id': cart.value,
-            'product_count': items.value,
-        }
+      data = {
+          'product_id': cart.value,
+          'product_count': items.value,
+      }
 
-        fetch("{% url 'basket:basket-add' %}",
-            {
-                method: "POST",
-                body: JSON.stringify(data),
-                headers: { "X-CSRFToken": '{{csrf_token}}' },
-            }
-        ).then(res => res.json()).then(data => {
-            count.innerHTML = data['count']
+      fetch("{% url 'basket:basket-add' %}",
+          {
+              method: "POST",
+              body: JSON.stringify(data),
+              headers: { "X-CSRFToken": '{{csrf_token}}' },
+          }
+      ).then(res => res.json()).then(data => {
+          count.innerHTML = data['count']
 
-            let message = document.getElementById('message')
-            message.innerHTML = `<div type='button' data-dismiss='alert' class="col-11 text-center alert alert-success alert-dismissible fade show" role="alert">${data['title']} is added to cart.</div>`;
-              
-        });
+          let message = document.getElementById('message')
+          message.innerHTML = `<div type='button' data-dismiss='alert' class="col-11 text-center alert alert-success alert-dismissible fade show" role="alert">${data['title']} is added to cart.</div>`;
+            
+      });
+}
+
+    }
+    
+  let message = document.getElementById('message')
+  let wishlist = document.getElementById('wishlist')
+
+  if(wishlist){
+    message.innerHTML = `<div type='button' data-dismiss='alert' class="col-11 text-center alert alert-danger alert-dismissible fade show" role="alert">Product is out of stock.</div>`;
   }
 
 </script>

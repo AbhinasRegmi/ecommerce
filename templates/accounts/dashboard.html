@@ -73,7 +73,15 @@
                             {% for item in order.items.all %}
                             
                                 <div class="row container-fluid my-1">
-                                    <div class="col"><img class="img-thumbnail" src="{{item.product.image.url}}" alt="{{item.product.slug}}"></div>
+                                    <div class="col">
+                                        {% if item.product.images %}
+                                            {% for image in item.product.images.all %}
+                                                {% if image.is_featured %}
+                                                <img class="img-thumbnail" src="{{image.image.url}}" alt="{{item.product.slug}}">
+                                                {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                    </div>
                                     <div class="col">{{item.product.title}}</div>
                                     <div class="col">Qty: <b>{{item.quantity}}</b></div>
                                     

@@ -20,6 +20,11 @@ class ProductView(DetailView):
     def get_queryset(self):
         return Product.objects.filter(slug=self.kwargs.get('slug'))
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category_tree'] = Category.objects.filter(product__slug=self.kwargs.get('slug')).get_ancestors(include_self=True)
+        return context
+
 class CategoryView(ListView):
     context_object_name = 'product_list'
     template_name = 'store/category-view.html'
