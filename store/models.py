@@ -13,7 +13,6 @@ class Category(MPTTModel):
     name = models.CharField(
         max_length=255,
         unique=True,
-        db_index=True,
 
         verbose_name='Category Name',
         help_text='The category name must be unique.',
@@ -22,7 +21,7 @@ class Category(MPTTModel):
     slug = models.SlugField(
         max_length=255,
         unique=True,
-        db_index=True,
+
     )
 
     #the nodes on tree will have parents, we will set parent to self
@@ -42,7 +41,7 @@ class Category(MPTTModel):
         order_insertion_by = ['name']
 
     class Meta:
-        verbose_name_plural='Categories'
+        verbose_name_plural= 'Categories'
 
     def __str__(self):
         return self.name
@@ -66,8 +65,8 @@ class ProductType(models.Model):
     )
 
     class Meta:
-        verbose_name = ['Product Type']
-        verbose_name_plural = ['Product Types']
+        verbose_name = 'Product Type'
+        verbose_name_plural = 'Product Types'
 
     def __str__(self):
         return self.name
@@ -88,8 +87,8 @@ class ProductSpecification(models.Model):
     )
 
     class Meta:
-        verbose_name = ['Product Specification']
-        verbose_name_plural = ['Product Specifications']
+        verbose_name = 'Product Specification'
+        verbose_name_plural = 'Product Specifications'
 
     def __str__(self):
         return self.name
@@ -175,8 +174,8 @@ class ProductSpecificationValue(models.Model):
     )
 
     class Meta:
-        verbose_name = ['Product Specification Value']
-        verbose_name_plural = ['Product Specification Values']
+        verbose_name = 'Product Specification Value'
+        verbose_name_plural = 'Product Specification Values'
 
     def __str__(self):
         return self.value
@@ -204,8 +203,8 @@ class ProductImage(models.Model):
     )
 
     class Meta:
-        verbose_name = ['Product Image']
-        verbose_name_plural = ['Product Images']
+        verbose_name = 'Product Image'
+        verbose_name_plural = 'Product Images'
 
     
 

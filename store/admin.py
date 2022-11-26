@@ -1,6 +1,7 @@
+from django import forms
 from django.contrib import admin
 
-from mptt.admin import ModelAdmin
+from mptt.admin import MPTTModelAdmin
 
 from .models import (
     Category,
@@ -12,13 +13,30 @@ from .models import (
 )
 
 
-# @admin.register(Category)
-# class CategoryAdminConfig(admin.ModelAdmin):
-#     list_display = ['name', 'total_items']
-#     prepopulated_fields = {'slug': ['name']}
+@admin.register(Category)
+class CategoryAdminConfig(MPTTModelAdmin):
+    prepopulated_fields = ['']
 
-# @admin.register(Product)
-# class ProductAdminConfig(admin.ModelAdmin):
-#     prepopulated_fields = {'slug': ['title']}
-#     list_display = ['title', 'category', 'in_stock', 'price']
-#     list_filter = ['in_stock']
+class ProductSpecificationInline(admin.TabularInline):
+    model=ProductSpecification
+
+@admin.register(ProductType)
+class ProductTypeAdmin(admin.ModelAdmin):
+    inlines = [ 
+        ProductSpecificationInline
+    ]
+
+
+class ProductImageInline(admin.TabularInline):
+    model = ProductImage
+
+class ProductSpecificationValueInline(admin.TabularInline):
+    model = ProductSpecificationValue
+
+
+@admin.register(Product)
+class ProductAdminConfig(admin.ModelAdmin):
+    inlines = [ 
+        ProductSpecificationValueInline,
+        ProductImageInline
+    ]

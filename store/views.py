@@ -18,14 +18,15 @@ class ProductView(DetailView):
     template_name = 'store/product-view.html'
 
     def get_queryset(self):
-        return Product.objects.filter(slug=self.kwargs.get('slug'), in_stock=True)
+        return Product.objects.filter(slug=self.kwargs.get('slug'))
 
 class CategoryView(ListView):
     context_object_name = 'product_list'
     template_name = 'store/category-view.html'
 
     def get_queryset(self):
-        self.category = Category.objects.filter(slug=self.kwargs.get('slug')).first()
+        #we need to return children under the category name too.
+        self.category = ''
         return Product.objects.filter(category=self.category)
 
     def get_context_data(self, **kwargs):
