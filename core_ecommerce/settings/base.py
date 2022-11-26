@@ -41,6 +41,9 @@ INSTALLED_APPS = [
     'accounts',
     'payments',
     'orders',
+
+    #external
+    'mptt',
 ]
 
 MIDDLEWARE = [

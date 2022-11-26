@@ -30,14 +30,20 @@
       <div class="row">
 
         {% for product in product_list%}
-            <div class="col-3">
-            <div class="card mb-4 box-shadow">
-                        <img class="card-img-top center" style="max-height:300px;max-width: 300px;"  src="{{ product.image.url }}" alt="Card image cap">
-                <div class="card-body">
+            <div class="col-lg-3 col-sm-4 my-1">
+            <div class="card mb-4 box-shadow h-100">
+                {% if product.images %}
+                  {% for image in product.images.all %}
+                    {% if image.is_featured %}
+                        <img class="card-img-top h-75"  src="{{ image.image.url }}" alt="Card image cap">
+                    {% endif %}
+                    {% endfor %}
+                {% endif %}
+                <div class="card-body h-30">
                 <p class="card-text">{{product.title}}</p>
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between">
                     <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-outline-secondary"><a class="text-decoration-none text-dark" href="{{ product.get_absolute_url }}">View</a></button>
+                    <a role='button' class="text-decoration-none text-dark btn btn-sm btn-outline-secondary" href="{{ product.get_absolute_url }}">Learn More</a>
                     </div>
                     <small class="text-muted">Rs. {{product.price}}</small>
                 </div>

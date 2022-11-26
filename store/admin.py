@@ -15,7 +15,7 @@ from .models import (
 
 @admin.register(Category)
 class CategoryAdminConfig(MPTTModelAdmin):
-    prepopulated_fields = ['']
+    prepopulated_fields = {'slug': ['name']}
 
 class ProductSpecificationInline(admin.TabularInline):
     model=ProductSpecification
@@ -40,3 +40,5 @@ class ProductAdminConfig(admin.ModelAdmin):
         ProductSpecificationValueInline,
         ProductImageInline
     ]
+
+    prepopulated_fields = {'slug': ['title']}
